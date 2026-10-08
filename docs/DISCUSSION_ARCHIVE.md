@@ -25,7 +25,10 @@ User wants five or more independently battery-powered stations visible together 
 - Sensing cars: motion/echo possible within specs, but not dependable vehicle class; LiDAR/radar/camera complement.
 
 ## Battery and power
-All components battery-powered, including master touchscreen and remote stations. Begin USB 5V power bank for lab. Later choose protected rechargeable battery, correct BMS/charger and 5V DC supply. Measure runtime: continuous radar + display + GNSS + radios are substantial loads. Outdoor stations require weather-resistant plastic radar window and thermal/optical sensor-specific windows, appropriate water ingress and condensation mitigation.
+Original portable goal: eventual batteries in main and remote stations. **Later update on 2026-10-07 supersedes initial bench plan:** main Waveshare screen uses a regulated 5V USB wall adapter plugged into household outlet during initial tests, NOT a USB power bank yet. Later portable main unit: compact 5,000/10,000mAh USB power bank or compatible protected 3.7V flat LiPo (manufacturer battery guidance applies). Later remote units: protected compact 18650 or 21700 with suitable charger/regulator, no bulky 12V battery. Measure runtime: continuous radar + display + GNSS + radios are substantial loads. Outdoor stations require weather-resistant plastic radar window and thermal/optical sensor-specific windows, appropriate water ingress and condensation mitigation.
+
+## Wireless mesh extension (added 2026-10-07)
+The user explicitly requested daisy-chain/multi-hop operation: sensors may be out of direct handheld radio range but still relay readings across other in-range ESP32 stations. Explore ESP-Mesh-Lite or explicitly implemented mesh routing; direct ESP-NOW does not automatically route multiple hops. Require persistent source identity, timestamps, retries, stale/offline display, reconnection, and reasonable battery-power assessment for always-on relays. Not yet implemented or verified.
 
 ## Shopping and software approach
 Manufacturer models and Amazon model-name searches stored in docs/HARDWARE_AND_SENSORS.md. Purchase first one of each intended sensor (not 12 or 24), screen, connection cables and power; check UART bridge requirements and compatibility before bulk orders.
