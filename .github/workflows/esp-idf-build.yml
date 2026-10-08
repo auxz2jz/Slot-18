@@ -1,0 +1,29 @@
+name: Slot-18 ESP-IDF build
+on:
+  push:
+    paths:
+      - 'firmware/esp-idf/**'
+      - '.github/workflows/esp-idf-build.yml'
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: espressif/idf:v5.4.2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ESP32-S3 candidate
+        working-directory: firmware/esp-idf
+        run: |
+          . /opt/esp/idf/export.sh
+          idf.py set-target esp32s3
+          idf.py build
+      - name: Save build output
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: Slot-18-v0.2.0-ESP32-S3-CANDIDATE
+          path: |
+            firmware/esp-idf/build/*.bin
+            firmware/esp-idf/build/flash_args
+            firmware/esp-idf/build/flasher_args.json
+          retention-days: 14
