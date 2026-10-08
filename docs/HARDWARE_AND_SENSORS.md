@@ -41,7 +41,19 @@ These are candidate parts, not purchased/tested components. Amazon URLs are SEAR
 - Environmental: BME280 temperature/humidity/pressure; SCD40 CO2; magnetic field/Hall sensor; air quality sensors. All optional; ensure appropriate power and interface.
 
 ## Power and supplies
-- Certified 5V 3A power bank: https://www.amazon.com/s?k=USB+C+power+bank+5V+3A
+### CURRENT TEST PHASE — MAIN SCREEN ON WALL POWER
+- **User's confirmed plan (2026-10-07): plug main 7-inch Waveshare ESP32-S3 touchscreen into a household wall outlet using a correctly rated USB wall charger and USB cable.** Keep it wall-powered for initial firmware, screen, touch and sensor testing. Not a built-in wall/mains supply: never wire AC mains to ESP32 components.
+- Candidate USB supply: regulated 5V wall adapter with enough continuous and peak current for screen + active sensor load; 5V/3A is a useful starting capacity **subject to verifying Waveshare input and attachments**: https://www.amazon.com/s?k=5V+3A+USB+C+wall+charger
+- USB-C cable capable of power and data when flashing/debugging: https://www.amazon.com/s?k=USB+C+data+power+cable
+- **Battery power is deferred until after bench testing**, not required to begin; future handheld operation stays portable and compact.
+### LATER BATTERY OPTIONS — AMAZON SEARCH LINKS ONLY
+- Main device compact USB-C 10,000mAh 5V power bank (example INIU; confirm output modes/current): https://www.amazon.com/s?k=INIU+10000mAh+5V+3A+power+bank
+- Alternative 5,000mAh slim USB-C power bank: https://www.amazon.com/s?k=slim+5000mAh+USB+C+power+bank
+- Remote stations: protected single 21700 4,000–5,000mAh cell + appropriately engineered charger/holder/regulator: https://www.amazon.com/s?k=protected+21700+5000mAh+rechargeable+battery
+- Remote stations: smaller protected single 18650 2,500–3,500mAh cell + charger/holder/regulator: https://www.amazon.com/s?k=protected+18650+rechargeable+battery
+- Optional single-cell flat 3.7V 2,000mAh LiPo, correct protection, polarity/connector, mechanical fit and charging limits for Waveshare PH2.0: https://www.amazon.com/s?k=3.7V+2000mAh+LiPo+PH2.0+battery
+- Compact 5V 3A USB power bank category for remote relay testing if a one-cell design's runtime is insufficient: https://www.amazon.com/s?k=USB+C+power+bank+5V+3A
+- All links are searches, not claims of current individual Amazon stock, cell authenticity, or electrical compatibility. No third-party storefront references needed for battery purchasing.
 - HY2.0 3P/4P to Dupont compatible cable (first check what's included): https://www.amazon.com/s?k=HY2.0+4pin+Dupont+cable
 - Jumper and breadboard: https://www.amazon.com/s?k=Dupont+jumper+wire+kit ; https://www.amazon.com/s?k=breadboard+prototype+PCB+kit
 - 32GB microSD: https://www.amazon.com/s?k=32GB+microSD+card
@@ -51,7 +63,7 @@ These are candidate parts, not purchased/tested components. Amazon URLs are SEAR
 - Handheld future built-in battery: Waveshare PH2.0 2-pin accepts only ONE nominal 3.7V rechargeable lithium cell; manufacturer recommends <=2,000mAh for onboard CS8501 charge/discharge manager (580mA nominal charging). Follow https://docs.waveshare.com/ESP32-S3-Touch-LCD-7/Instructions-For-Use and https://docs.waveshare.com/ESP32-S3-Touch-LCD-7/FAQ . Verify battery pin polarity, protection and surge/radio load; do NOT parallel batteries at its battery port or connect 12V.
 - Compact remote units: protected single 18650 ~2500-3500mAh or protected single 21700 ~4000-5000mAh nominal Li-ion cell, holder and matching charge/protection/voltage-regulation module. Alternative flat protected 1S 3.7V LiPo 1000-2000mAh. Search: https://www.amazon.com/s?k=protected+21700+rechargeable+battery+holder and https://www.amazon.com/s?k=protected+18650+battery+holder+charging+module
 - Do NOT connect a raw 3.7V lithium cell directly to 5V input or a 3.3V-only ESP32 pin. USB 5V boost/regulator or correct 3.3V regulation mandatory. Choose the exact regulator/charger only after verifying the selected ESP32 board and sensor voltage requirements.
-- Mesh routers/relay stations must remain powered and listening for traffic; deep sleep invalidates mesh forwarding. Duty-cycle non-relay endpoints only when feature allows; measure real radio+radar consumption and battery life before making autonomy claims. Build battery state-of-charge and brownout telemetry, low-battery warnings and safe shutdown/reconnect logic.
+- Future multi-hop mesh: a sensor can report through neighboring ESP32 stations to an in-range relay and the handheld; preserve origin ID and hop/last-seen data, consider re-routing and outage buffering. ESP-NOW **alone is not automatically routed**; validate a suitable mesh stack/protocol on this screen + remote ESP32 variant. Mesh routers/relay stations must remain powered and listening for traffic; deep sleep invalidates mesh forwarding. Duty-cycle non-relay endpoints only when feature allows; measure real radio+radar consumption and battery life before making autonomy claims. Build battery state-of-charge and brownout telemetry, low-battery warnings and safe shutdown/reconnect logic.
 - If continuous multi-day field operation is required, either use a larger-but-still-compact external USB power bank, solar charger designed for lithium chemistry, or mains where accessible; do not pretend a single small cell guarantees days of mesh relaying.
 - Runtime estimates must use measured continuous and peak currents, battery Wh, converter efficiency, temperature and radio duty; do not invent hours.
 - Remote battery runtime = battery Wh / measured average input W x real derating; no invented runtime before measuring.
