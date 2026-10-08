@@ -1,6 +1,6 @@
 # Slot-18 — Handheld Multi-Sensor Detection System
 
-**Status:** IN PROGRESS — planning and software-only prototype. **Latest candidate:** v0.1.0 (development scaffold; not hardware-tested). **Last user-verified version:** none.
+**Status:** IN PROGRESS — ESP32 firmware bring-up candidate in addition to browser prototype. **Firmware candidate:** v0.2.0 (build/test pending, no real radar input). **Browser candidate:** v0.1.0 (unit tests passed). **Last user-verified version:** none.
 
 A modular ESP32-S3 based, handheld 7-inch touchscreen sensor instrument that can later communicate with battery-powered remote stations, render honest radar/thermal/LiDAR/GNSS measurements, and present overhead/property-map or floor-plan views.
 
@@ -11,7 +11,7 @@ A modular ESP32-S3 based, handheld 7-inch touchscreen sensor instrument that can
 - DFRobot C4002 **SEN0691** stationary-presence radar
 - Potential SC16IS752 dual UART expansion module (exact wiring/throughput unverified)
 
-The first milestone uses **simulated readings only**. No claims of actual sensor detection, through-wall sensing, people identification, GPS accuracy, or working ESP32 firmware are made.
+The first milestone uses **simulated readings only**. Real sensor readings and physical display/touch testing are not yet verified. A v0.2.0 ESP-IDF project exists in firmware/esp-idf with the Waveshare display driver and simulated radar interface; compilation and physical testing are separate evidence gates.
 
 ## First implementation
 - `prototype/index.html` — desktop/mobile browser-based UI mock and demo (open the HTML file locally). Clearly marked SIMULATED.
@@ -20,11 +20,16 @@ The first milestone uses **simulated readings only**. No claims of actual sensor
 - `docs/` — hardware, system architecture, purchase options, diagnostic coverage, test plan, and handoff.
 
 ## Planned progression
-1. Software-only radar visualization and core data contract.
-2. Bring up 7-inch display and touch using Waveshare's working ESP-IDF/LVGL demonstration; use existing board drivers, no guessed pinout.
+1. Software-only radar visualization and core data contract (v0.1.0 candidate, unit tests passed).
+2. Use the prepared v0.2.0 source in firmware/esp-idf, after checking Waveshare's unmodified sample. Compile and user-test the 7-inch LVGL touchscreen. Follow docs/FIRST_HARDWARE_TEST.md; no guessed pinout.
 3. Integrate LD2450; then C4001 and C4002 individually and together, checking interference.
 4. Add IMU, GNSS, thermal, LiDAR, battery metrics, and remote ESP32 stations incrementally.
 5. Field-test four-direction coverage; consider eight directions only when proven necessary.
+
+## Hardware and firmware entry points
+- [Firmware v0.2.0 candidate](firmware/esp-idf/README.md) — ESP-IDF, LVGL v9, simulated target and touch test.
+- [First hardware test guide](docs/FIRST_HARDWARE_TEST.md) — PC flashing, safe USB wall power, and later one LD2450.
+- [Project memory](PROJECT_MEMORY.md) and [roadmap](ROADMAP.md) keep evidence and checkpoints.
 
 ## Governing development standards
 At each new development session first read `auxz2jz/master-instruction-library/INSTRUCTION_INDEX.md` and its mandatory global standards. Canonical library: https://github.com/auxz2jz/master-instruction-library . Also read `PROJECT_MEMORY.md`, `ROADMAP.md`, `docs/DIAGNOSTICS_AND_TESTING.md` before modifying this project. Never call an untested build VERIFIED.
