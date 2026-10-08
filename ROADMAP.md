@@ -4,7 +4,7 @@ A test passing does not make a candidate user-VERIFIED.
 
 ## Milestones
 - v0.1.0 [CANDIDATE] Standalone browser radar UI + simulated telemetry, normalized measurement core, JSONL diagnostic export, simple guided visual testing.
-- v0.2.0 [PLANNED] ESP32-S3 7-inch touchscreen bring-up using **regulated wall-outlet USB power**, Waveshare-supported ESP-IDF example and LVGL; no radar needed, UI simulated on hardware.
+- v0.2.0 [IN PROGRESS; SOURCE CANDIDATE] ESP32-S3 7-inch touchscreen using official Waveshare display port, ESP-IDF + LVGL v9, test controls and simulated moving dot. Source in firmware/esp-idf; CI and physical flash/test are separate gates. Bench power from regulated wall-outlet USB supply. See docs/FIRST_HARDWARE_TEST.md.
 - v0.3.0 [PLANNED] Single LD2450 UART: framed packets, unit/axis verification, live XY dots, disconnected state, logs and replay tests.
 - v0.4.0 [PLANNED] C4001 SEN0609 driver; range, motion, presence with truthful uncertainty; confirm UART/I2C hardware details.
 - v0.5.0 [PLANNED] C4002 SEN0691 driver; test still/sitting detection and false positives.
@@ -25,6 +25,11 @@ A test passing does not make a candidate user-VERIFIED.
 2. SC16IS752 only after direct UART and board interface review; compatible cables and logic-level/power budget.
 3. GNSS + calibrated orientation + small ESP32 node + safe battery solution; one node first.
 4. LiDAR/thermal and additional sector copies only following field results.
+
+## Hardware bring-up checkpoint
+- First: run unmodified Waveshare display/touch demo and record user-observed behavior.
+- Next: flash Slot-18 v0.2.0 and verify top SIMULATED ONLY banner and touch controls.
+- Then: LD2450 UART v0.3.0; no additional UART bridge needed for first screen-only test.
 
 ## Test strategy
 See docs/DIAGNOSTICS_AND_TESTING.md. At each milestone write real compile/test evidence and a handoff checkpoint. Never move LAST VERIFIED without user testing.
