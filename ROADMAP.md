@@ -51,3 +51,9 @@ See docs/DIAGNOSTICS_AND_TESTING.md. At each milestone write real compile/test e
 - POWER-05: Add per-bay SoC, measured runtime estimate, pack aging/SoH where supported and battery diagnostics to remote telemetry and handheld/web/Android UI.
 - POWER-06: Evaluate optional in-device independent multi-channel charging with safe input/current/thermal limits after standalone dock works.
 - Design specification: docs/HOT_SWAPPABLE_LIPO_POWER_SYSTEM.md. No milestones automatically coded until earlier firmware bring-up verified.
+
+## Proposed larger 18650 packs / unattended runtime (UNDER EVALUATION)
+- Compare protected four-cell 18650 cartridges with earlier LiPo pouch concept; user may want 2x four-cell modules per remote station and multiple cartridges on handheld.
+- Define whether hot-swapping is required at the **module/cartridge** level or each individual 18650; an ordinary parallel holder is not independently cell hot-swappable.
+- Use measured live ESP32 radar/mesh/display currents and user-selected runtime target to select capacity, regulator, contacts, BMS/fuses/charging, maintenance service plan and printed enclosure size.
+- See docs/18650_MULTICELL_POWER_SIZING.md. Keep existing v0.2.0 firmware unchanged and all power implementation as PLANNED until measured/tested.
