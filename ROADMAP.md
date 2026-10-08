@@ -65,3 +65,11 @@ See docs/DIAGNOSTICS_AND_TESTING.md. At each milestone write real compile/test e
 - POWER-10: Add optional PV input via correct solar MPPT/input DPM controller and charge from surplus energy while equipment runs, including realistic daily energy budget, shading and hot weather protections.
 - POWER-11: Provide external USB, solar, battery-source, per-pack charging/current/temperature/fault and estimated runtime telemetry, exported over remote mesh to touchscreen and Android/web.
 - Begin with actual measured currents and protected bench-supply emulation before lithium cells; preserve v0.2.0 firmware candidate with no modifications. Detailed plan: docs/USB_SOLAR_MULTIPACK_POWER_ARCHITECTURE.md.
+
+
+## Device-side backplane — planned gated hardware integration
+- BP-01 Confirm IP5328P exact board pinout, BOOST 5V source (always 5V vs PD switched voltage), independent 5V charge input, output auto-shutdown and charging behavior. If not dock-compatible, change power-bank choice rather than forcing unsafe wiring.
+- BP-02 Develop remote 2-cartridge protected 5V selector with eFuse/hot-swap/current-limit, auto power switching, single-cartridge full-load rating; TPS2121 is a candidate reference, not a chosen purchasable ready-to-plug board.
+- BP-03 Expand selector to handheld 2-4 cartridges with validated path ratings and no pack backfeed. Keep individual cartridge channels separate, preserve pack identity and SoC limitations.
+- BP-04 External USB-C/PD and solar-regulated 5V supply **directly powers device**, with priority MUX over cartridge backup and independent per-cartridge charge-enable/power budget. Check IP5328P charging disables boost and unexpected solar or wall removal does not reboot the ESP32.
+- BP-05 Bench tests of source insertion/extraction, sleep/wake and delayed output restoration, true USB-C PD vs 5V-only pogo charging, solar fluctuation, short/thermal protection, telemetry, and 5V rail with real loads. Full plan: docs/DEVICE_SIDE_POWER_BACKPLANE.md. Software candidate stays unchanged.
