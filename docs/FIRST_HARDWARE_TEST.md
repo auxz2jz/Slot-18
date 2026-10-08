@@ -10,7 +10,7 @@
 
 ## B. First run the manufacturer's unmodified screen demonstration
 1. Confirm rear-board model and hardware revision. Check touchscreen model, 16 MB flash, 8 MB PSRAM and matching demo.
-2. On PC, install VS Code + official Espressif IDF extension and matching ESP-IDF 5.x (project CI initially uses v5.4.2).
+2. On PC, install VS Code + official Espressif IDF extension and matching ESP-IDF 5.5.2 (required by the selected esp_lvgl_adapter dependency; earlier 5.4.2 build failed dependency resolution).
 3. Refer to https://docs.waveshare.com/ESP32-S3-Touch-LCD-7 and the vendor ESP-IDF LVGL v9 project:
    https://github.com/waveshareteam/ESP32-S3-Touch-LCD-7/tree/main/examples/ESP-IDF/09_lvgl_v9_demo
 4. Connect the correct **programming USB-C** port to PC, select actual COM port. If port is missing, follow Waveshare BOOT/RESET procedure, not random GPIO rewiring.
