@@ -57,3 +57,11 @@ See docs/DIAGNOSTICS_AND_TESTING.md. At each milestone write real compile/test e
 - Define whether hot-swapping is required at the **module/cartridge** level or each individual 18650; an ordinary parallel holder is not independently cell hot-swappable.
 - Use measured live ESP32 radar/mesh/display currents and user-selected runtime target to select capacity, regulator, contacts, BMS/fuses/charging, maintenance service plan and printed enclosure size.
 - See docs/18650_MULTICELL_POWER_SIZING.md. Keep existing v0.2.0 firmware unchanged and all power implementation as PLANNED until measured/tested.
+
+## Confirmed in-device USB/solar charging and full-cartridge hot-swap — DESIGN ONLY
+- POWER-07: Choose protected serviceable four-cell 18650 cartridges, whole-pack hot swapping only. Cell service/replacement happens with the cartridge fully removed and evaluated; matched-cell/balancing constraints documented.
+- POWER-08: Add USB-C/DC external power input to BOTH remote nodes and main handheld, with system-load-priority power path, input current limits and safe automatic changeover from batteries without reboot.
+- POWER-09: Add independent per-pack in-device lithium charger/protection/thermal paths: remote 2, handheld 2 initially and possible 4; prevent charging one pack from another and enforce stable regulated 5V device rail.
+- POWER-10: Add optional PV input via correct solar MPPT/input DPM controller and charge from surplus energy while equipment runs, including realistic daily energy budget, shading and hot weather protections.
+- POWER-11: Provide external USB, solar, battery-source, per-pack charging/current/temperature/fault and estimated runtime telemetry, exported over remote mesh to touchscreen and Android/web.
+- Begin with actual measured currents and protected bench-supply emulation before lithium cells; preserve v0.2.0 firmware candidate with no modifications. Detailed plan: docs/USB_SOLAR_MULTIPACK_POWER_ARCHITECTURE.md.
