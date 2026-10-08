@@ -3,7 +3,7 @@
 The source builds on Waveshare's official ESP-IDF LVGL v9 display + GT911 touch driver, adapted for a radar interface with SIMULATED values. This is NOT a real radar-reading firmware. See main/main.c and README.md at the repository root for project context.
 
 ## Computer flashing procedure
-1. Install ESP-IDF 5.4.x via VS Code Espressif IDF extension or official CLI.
+1. Install ESP-IDF 5.5.2 via VS Code Espressif IDF extension or official CLI.
 2. Open this folder in IDF project mode. Set ESP32-S3 target, build with idf.py set-target esp32s3 && idf.py build.
 3. Attach the board's UART-labelled USB-C programming connector to computer via data-capable USB cable, not to mains adapter while flashing. Confirm actual COM port; flash / monitor using idf.py -p COMx flash monitor (Windows) or corresponding Linux/macOS port. Follow Waveshare RESET guidance.
 4. Verify the orange SIMULATED ONLY label, moving target dot and changing heading + pause buttons. Press Test to start guided steps, manually PASS/FAIL, and use UART logs to inspect diagnostics. The on-screen console is a CANDIDATE until user confirms touch works.
