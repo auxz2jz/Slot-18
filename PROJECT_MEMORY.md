@@ -23,6 +23,7 @@ Canonical master rules: https://github.com/auxz2jz/master-instruction-library
 - Modular capability-based adapters for radar, thermal, GNSS/RTK, IMU/compass, LiDAR/depth, PIR, camera, magnetic, vibration, ultrasonic and door contacts.
 - Prefer Amazon comparison listings, budget-conscious staged purchases, open-source tooling where practical.
 - No internet or cloud required for local mode.
+- Battery constraint clarified 2026-10-07: **No large/heavy 12V batteries**; main handheld starts USB-C, future 5,000-10,000mAh compact USB power bank or appropriate single 3.7V small battery for Waveshare onboard PH2.0 (manufacturer suggests <=2,000mAh). Remote nodes use compact protected 18650/21700 or flat 1S LiPo with correct charging, voltage regulation, and voltage monitoring. Mesh relay nodes stay awake and may have shorter runtime; measure current before final sizing. Full research in docs/HARDWARE_AND_SENSORS.md.
 
 ## Technical constraints / warnings
 - All three candidate radar models share 24 GHz region; mutual interference must be measured.
