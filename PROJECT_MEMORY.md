@@ -5,11 +5,11 @@ Canonical master rules: https://github.com/auxz2jz/master-instruction-library
 
 ## Status
 - Project: Handheld Multi-Sensor Detection System
-- Current task: initialize permanent project and start a software-only radar visualization/data-contract prototype
-- Candidate: v0.1.0 — software-only demonstration, NOT a flashed ESP32 build
+- Current task: prepare v0.2.0 ESP32-S3 physical screen bring-up as an **unverified candidate** (screen simulator first), then integrate one LD2450 radar only after display/touch verification.
+- Candidates: browser v0.1.0 (basic unit tests passed); firmware v0.2.0 (source committed, firmware CI build pending, not flashed and not user-tested).
 - Last user-verified version: NONE
-- Latest legitimate artifact: repository main branch, pending initial project commit and explicit testing
-- Hardware received/tested: NONE
+- Source artifact: v0.2.0 ESP-IDF display simulator source committed at 7ef78bcfb7ffac51acfb310cc08c679223b583d1. Existing v0.1.0 browser simulator stays intact; no user-confirmed baseline.
+- Hardware received/tested: NONE confirmed. User said to ASSUME a Waveshare 7-inch ESP32-S3 and one radar are available for planning; not proof of hardware in hand.
 - Hardware purchases: planned only; do not assume orders placed
 - User direction: begin before hardware arrives; user will advise when available
 - Cross-platform: browser prototype is a design harness; ESP32 firmware is the intended target. No Android/Windows app started.
@@ -39,10 +39,10 @@ Canonical master rules: https://github.com/auxz2jz/master-instruction-library
 - Prototype is not a reliable life-safety or emergency location device.
 
 ## Actual implementation / verification
-- Initial project scaffold + browser simulator created as candidate v0.1.0.
+- Initial project scaffold + browser simulator created as candidate v0.1.0; full v0.2.0 ESP-IDF project started under firmware/esp-idf based on the official Waveshare ESP-IDF LVGL v9 port.
 - Source files: prototype/index.html, style.css, core.js, app.js, test_core.cjs.
 - Software build/automated-test status: not yet verified by user.
-- Real display, radar, GPS, compass, mapping, firmware and battery runtime: NOT IMPLEMENTED.
+- Real display operation, real radar inputs, GPS, compass, mapping and battery runtime: NOT VERIFIED/NOT IMPLEMENTED. ESP32 firmware SOURCE now exists, but no real-data UART radar driver is implemented.
 - Known bugs/failed approaches: none documented yet; do not infer success before running tests.
 - Diagnostic/test protocol in docs/DIAGNOSTICS_AND_TESTING.md.
 
@@ -53,7 +53,14 @@ Canonical master rules: https://github.com/auxz2jz/master-instruction-library
 - Test scope: basic normalization, coordinates, synthetic target types and bad input. Browser visual operation and actual ESP32 hardware have NOT been user-verified.
 - Attempted local clone to test in container failed because container could not resolve github.com; used the repository's GitHub Actions result instead.
 
+## v0.2.0 screen firmware checkpoint (2026-10-07)
+- Candidate source commit: 7ef78bcfb7ffac51acfb310cc08c679223b583d1.
+- Firmware workflow: https://github.com/auxz2jz/Slot-18/actions/runs/37726264848 — initially running; check final conclusion, record actual build result before claiming success.
+- Uses official Waveshare port + LVGL 9 and a self-contained simulated screen: Facing / Pause / Test / PASS / FAIL / LOGS, NVS bounded persistent serial diagnostics.
+- First physical wiring assumptions deferred: GPIO43/44 is UART0 shared between board UART1 and UART2 via switch, so logging and physical radar connection conflict unless deliberately separated. Board 05_UART_Test default GPIO4/5 unsuitable with LCD/touch.
+- Detailed procedure: docs/FIRST_HARDWARE_TEST.md.
+
 ## Exact next action
-1. User or developer opens prototype/index.html in browser, follows docs/DIAGNOSTICS_AND_TESTING.md, and records PASS/FAIL and visual findings.
-2. When screen arrives, load vendor Waveshare ESP-IDF/LVGL demo and establish verified backlight/touch baseline; keep separate from simulator status.
-3. Add LD2450 physical driver first and test orientation, range, packet decodes, and diagnostics. Then C4001/C4002 and UART expansion as indicated by physical test evidence.
+1. Check v0.2.0 ESP-IDF CI build conclusion and fix any actual build failure once using evidence; update this checkpoint.
+2. On actual board, first flash **unaltered vendor Waveshare display demo** to establish hardware touch baseline, then build/flash Slot-18 firmware v0.2.0 and use the guided UI tests. Record user-observed PASS/FAIL and serial logs.
+3. After user confirms display and touch, add real LD2450 UART driver in a separate candidate, verify pinout, power, UART conflicts and decoded XY measurements. Preserve last confirmed state.
