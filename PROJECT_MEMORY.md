@@ -66,3 +66,11 @@ Canonical master rules: https://github.com/auxz2jz/master-instruction-library
 1. Check v0.2.0 ESP-IDF CI build conclusion and fix any actual build failure once using evidence; update this checkpoint.
 2. On actual board, first flash **unaltered vendor Waveshare display demo** to establish hardware touch baseline, then build/flash Slot-18 firmware v0.2.0 and use the guided UI tests. Record user-observed PASS/FAIL and serial logs.
 3. After user confirms display and touch, add real LD2450 UART driver in a separate candidate, verify pinout, power, UART conflicts and decoded XY measurements. Preserve last confirmed state.
+
+## Companion interfaces and connectivity — requested 2026-10-07 (DESIGN ONLY)
+- User explicitly states neither the program nor physical device has been tested yet. Firmware v0.2.0 remains an unverified candidate; no Android APK or networked website exists.
+- User requests an Android app plus web browser dashboard for viewing and appropriately controlling the main ESP32-S3 sensor system, over nearby BLE (lightweight pairing/settings/status), direct ESP32 Wi-Fi with no internet, shared local Wi-Fi router/hotspot, and optional remote internet access only when provisioned and connected.
+- ESP32-S3 supports BLE only, not Classic Bluetooth. Prefer Wi-Fi for full real-time maps and WebSocket updates; BLE is best for provisioning and lower-rate readings. Simultaneous BLE, Wi-Fi SoftAP/STA and ESP-NOW/mesh must be performance-tested.
+- Secure internet access needs explicit VPN-capable gateway or outbound TLS relay and authentication; internet connectivity alone is insufficient. Avoid exposing unauthenticated ESP32 HTTP ports. ChatGPT does not automatically have direct device access.
+- Added permanent cross-platform planning at docs/REMOTE_ACCESS_AND_CLIENTS.md, shared/FEATURE_CATALOG.md, shared/DATA_FORMATS_AND_INTERFACES.md, android/README.md, web/README.md. Android/web versions and verification must be tracked independently from ESP-IDF and browser simulator.
+- Next physical step unchanged: finish main touchscreen firmware and single-radar tests before implementing network services. The current additions are documentation only.
