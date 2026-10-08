@@ -44,8 +44,14 @@ Canonical master rules: https://github.com/auxz2jz/master-instruction-library
 - Known bugs/failed approaches: none documented yet; do not infer success before running tests.
 - Diagnostic/test protocol in docs/DIAGNOSTICS_AND_TESTING.md.
 
-## Exact next step after initial commit
-1. Run node --test prototype/test_core.cjs and inspect behavior of prototype/index.html in a desktop/mobile browser.
-2. Record result + commit SHA in project memory; ask user to verify UI concept when suitable.
-3. Only after screen arrives: use official Waveshare ESP-IDF/LVGL sample to bring up capacitive touch, then port simulator view; avoid guessing GPIO.
-4. Add LD2450 physical driver next; use separate guided tests and diagnostic captures.
+## Initial automated test result (not user hardware verification)
+- GitHub main candidate commit: bbae81bf6b472ec954a6387a59fe5601c963610f
+- GitHub Actions workflow: https://github.com/auxz2jz/Slot-18/actions/runs/37724357604
+- Result: SUCCESS; Node syntax checks for core.js/app.js and unit tests passed.
+- Test scope: basic normalization, coordinates, synthetic target types and bad input. Browser visual operation and actual ESP32 hardware have NOT been user-verified.
+- Attempted local clone to test in container failed because container could not resolve github.com; used the repository's GitHub Actions result instead.
+
+## Exact next action
+1. User or developer opens prototype/index.html in browser, follows docs/DIAGNOSTICS_AND_TESTING.md, and records PASS/FAIL and visual findings.
+2. When screen arrives, load vendor Waveshare ESP-IDF/LVGL demo and establish verified backlight/touch baseline; keep separate from simulator status.
+3. Add LD2450 physical driver first and test orientation, range, packet decodes, and diagnostics. Then C4001/C4002 and UART expansion as indicated by physical test evidence.
