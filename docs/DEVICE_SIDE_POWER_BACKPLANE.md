@@ -62,3 +62,13 @@ Pack C/D equivalent if the handheld is expanded.
 NOTE: External input voltage to pack charger must match that board's permitted charging input; MPPT/solar raw voltage NEVER fed straight to 5V pins. Any power-bank USB-C input-role negotiation cannot be assumed to work via a bare 5V pad. No direct wiring schematic finalized or tested.
 
 References: https://www.analog.com/en/products/LTC4412.html (multiple ideal-diode OR paths) ; https://www.ti.com/product/TPS2121 (2-input MUX), https://www.waveshare.com/solar-power-manager-d.htm (simultaneous charge/discharge 5V/3A product claim).
+
+
+## User correction: TWO CHARGING MODES for each removable cartridge (2026-10-07)
+The user's meaning is **two alternative locations/methods for charging the same four-cell 1S4P cartridge**, NOT a request to charge the cells twice or through two chargers in series. This takes priority over ambiguous earlier descriptions:
+
+**Mode A — cartridge OUTSIDE device:** Remove entire four-18650 cartridge. Charge its internal pack through (A1) cartridge's own USB-C input plugged into an external wall charger, OR (A2) charge dock that supplies power through the cassette's **dedicated charging-input contacts**. The same validated charger/protection inside cartridge may regulate charging for either connection, using source selection/backfeed protection.
+
+**Mode B — cartridge INSTALLED inside device:** Keep cartridge docked in handheld or remote station. The device's own USB-C/wall and optionally regulated solar power feeds two distinct branches: **(B1) a protected load-priority path to the device electronics, and (B2) independently current-limited input to each inserted cartridge's existing charging circuit** through charge-input docking contacts. The cartridge's distinct 5V output contacts feed the reverse-blocked device battery backup combiner. Device must not charge multiple raw cartridge battery cell terminals tied together, and device's 5V OUTPUT OR rail is not a battery charging input.
+
+Expected behavior: every cartridge contains **ONE appropriate charger/protection system** usable via either charging mode. Do NOT inadvertently run two chargers in parallel into the same pack when USB-C cartridge port and device/dock contacts are both present; input selector, power source interlock, current budget and isolation mandatory. Board datasheet/pad validation needed—USB-C port is not evidence of safe direct charge injection via a pogo pad, nor evidence of true pass-through. Neither IP5328P nor Waveshare Solar Power Manager (D) chosen/verified yet. Charge while installed without reboot depends on correct source switching and measured full system behavior.
