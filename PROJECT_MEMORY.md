@@ -55,7 +55,9 @@ Canonical master rules: https://github.com/auxz2jz/master-instruction-library
 
 ## v0.2.0 screen firmware checkpoint (2026-10-07)
 - Candidate source commit: 7ef78bcfb7ffac51acfb310cc08c679223b583d1.
-- Firmware workflow: https://github.com/auxz2jz/Slot-18/actions/runs/37726264848 — initially running; check final conclusion, record actual build result before claiming success.
+- First firmware CI run: https://github.com/auxz2jz/Slot-18/actions/runs/37726264848 FAILED in dependency resolution (ESP-IDF 5.4.2 incompatible with esp_lvgl_adapter ^0.5.2 requiring ESP-IDF >=5.5). This is an environment/dependency mismatch, not yet a source compile assessment.
+- Fix: switched CI image to pinned ESP-IDF 5.5.2 and updated setup docs, preserving original browser simulator; current CI candidate: https://github.com/auxz2jz/Slot-18/actions/runs/37726404321 (started; check actual result before claiming build success).
+- No physical screen test, radar input, or user-verified baseline yet.
 - Uses official Waveshare port + LVGL 9 and a self-contained simulated screen: Facing / Pause / Test / PASS / FAIL / LOGS, NVS bounded persistent serial diagnostics.
 - First physical wiring assumptions deferred: GPIO43/44 is UART0 shared between board UART1 and UART2 via switch, so logging and physical radar connection conflict unless deliberately separated. Board 05_UART_Test default GPIO4/5 unsuitable with LCD/touch.
 - Detailed procedure: docs/FIRST_HARDWARE_TEST.md.
