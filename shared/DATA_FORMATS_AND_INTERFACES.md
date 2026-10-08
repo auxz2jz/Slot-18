@@ -36,3 +36,11 @@ Planned interfaces:
 - No embedded fixed credentials or public open HTTP port. Privacy: don't expose location/history except to intentionally authorized clients.
 
 Implementation and testing state as of 2026-10-07: all of the above PLANNED ONLY. See docs/REMOTE_ACCESS_AND_CLIENTS.md.
+
+## Planned removable battery bay telemetry
+Battery status reports from remote nodes and main unit should retain per-source station identity, timestamp, pack insertion/removal sequence and bay index, supporting two remote bays or four handheld bays without changing the client schema:
+- station_id, power_source (usb_wall / battery / external), battery_bay_count, battery_present_count
+- bays[]: bay_id, pack_id (if known), present, active, charging, fault, state_of_charge_pct (nullable), state_of_health_pct (nullable), voltage_mV, current_mA (if sensed), temperature_C (if available), remaining_energy_Wh_estimate, estimated_minutes_left (nullable), quality/reason.
+- aggregate: usable_energy_Wh_estimate, estimated_minutes_left, number of active power paths, low_battery_alert, hot_swap_safe_for_bay where hardware validated.
+- Device estimated minutes must be labeled estimates; no reading from absent gauge can be invented. Emit BATTERY_INSERT, BATTERY_REMOVE, POWER_SOURCE_CHANGE, CHARGE_START/STOP, BATTERY_LOW, GAUGE_UNAVAILABLE, BATTERY_FAULT as actual diagnostic events with source/correlation IDs.
+- See docs/HOT_SWAPPABLE_LIPO_POWER_SYSTEM.md. DESIGN ONLY; not implemented or verified.
