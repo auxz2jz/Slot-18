@@ -40,3 +40,25 @@ F. Add 2nd cartridge, then optional 3rd/4th, validate no pack-to-pack reverse cu
 G. Use correct Li-ion matched-cell and 1S4P pack protection practice. Only full cartridges hot-swap; individual 18650 servicing is off-device and must not parallel cells with differing voltages or unknown condition.
 
 **Do not buy multiple IP5328P boards, MUXes or pogo connector sets as 'compatible complete system' until a candidate hardware inspection and benchtop switchover test verifies the module's actual input/output interfaces and charge behavior.**
+
+
+## Plain-English architecture clarification: THREE independent functions (2026-10-07)
+Each cartridge is already **1S4P** (four matched cells in parallel, ~3.6/3.7V nominal); its charger/boost module is intended to supply a protected regulated 5V OUTPUT. Four inserted cartridges on a handheld are **NOT another 4S1P, 1P4S or 1S4P raw battery**. We combine separately regulated outputs by **power OR-ing** or a prioritized power MUX:
+- Function 1: **cartridge charging** — USB-C / selected 5V solar-regulated external source -> individually protected charger-input branch for *each* cartridge. Prefer each cartridge has its own suitable true power-path 1S charging board. Can charge each independently when external supply budget allows. Option: ONE shared 1S charger only with separately isolated, qualified sequential charger-selection and proper pack monitoring; not by hanging a charger on an ORed 5V bus. Four cartridges are never raw-paralleled for charging.
+- Function 2: **battery power aggregation** — cartridge A/B/(C/D) 5V outputs -> independent per-slot eFuse/hot-plug/backflow protection -> suitable 2- or 4-source ideal-diode OR/switching circuit -> 5V BATTERY BACKUP rail. The combiner cannot safely be treated as a bidirectional charger; backflow protection intentionally disallows charging cartridges through that combined output. It also may NOT make four packs share current equally; ideal-OR tends to source highest 5V output until voltage droops. True balancing would require explicit current-sharing controls.
+- Function 3: **device power distribution** — protected USB-C/wall and solar-regulated 5V source + the 5V battery-backup rail -> external-priority switchover MUX -> protected 5V SYSTEM rail, fused branches to LCD/ESP32/5V radars, dedicated regulated 3.3V as needed. There usually is no additional 5V boost AFTER OR when cartridges supply stable 5V; reserve converter only when selecting raw battery architecture or replacing 5V regulated rail design.
+- Whenever USB-C/solar is attached it should directly power the 5V SYSTEM via own path, *not via reverse charging of battery output OR circuit*. The same external source can supply multiple **separate cartridge charging paths** with controlled/limited charging rates; charging gets only power left after critical device load.
+- Cartridge hardware choice caveat: Standard IP5328P often stops output during charging and can sleep at low current, causing missing battery-backup rail. Candidate Waveshare Solar Power Manager (D) explicitly states charge/discharge simultaneous 5V/3A output, but seamless failover, battery charge rate, pogo charge-input contacts and low-load auto-sleep are not validated. If ALL pack outputs disappear while charging, the complete system cannot reliably hot-swap after losing external power, regardless of power MUX speed. Use measured non-interrupted device supply only after load-step/loss-of-external and cartridge insert/remove bench tests; choose different pack board as needed.
+- On a single shared 5V rail, load current is determined by the consumers; adding cartridge energy capacity extends runtime but does not force more current into devices. The controller limits peak current and avoids backfeed/inrush. Real-rated contacts, protection, fusing, thermal monitoring and suitable lithium pack assembly mandatory.
+
+Summary connection map:
+USB-C / SOLAR -> external input manager -> regulated 5V EXTERNAL -> priority SYSTEM MUX -> 5V DEVICE LOAD
+                                       -> pack A charger input
+                                       -> pack B charger input
+                                       -> (pack C/D charger inputs)
+Pack A 1S4P cells -> protector + TRUE pass-through charger/boost -> 5V OUTPUT A -> protected OR channel A ---->
+Pack B 1S4P cells -> protector + TRUE pass-through charger/boost -> 5V OUTPUT B -> protected OR channel B ----> 5V BACKUP -> priority SYSTEM MUX
+Pack C/D equivalent if the handheld is expanded.
+NOTE: External input voltage to pack charger must match that board's permitted charging input; MPPT/solar raw voltage NEVER fed straight to 5V pins. Any power-bank USB-C input-role negotiation cannot be assumed to work via a bare 5V pad. No direct wiring schematic finalized or tested.
+
+References: https://www.analog.com/en/products/LTC4412.html (multiple ideal-diode OR paths) ; https://www.ti.com/product/TPS2121 (2-input MUX), https://www.waveshare.com/solar-power-manager-d.htm (simultaneous charge/discharge 5V/3A product claim).
