@@ -1,0 +1,53 @@
+# Hardware inventory, alternatives and purchasing references
+These are candidate parts, not purchased/tested components. Amazon URLs are SEARCH links for matching exact model; price/stock changes.
+
+## Base unit
+- Waveshare ESP32-S3-Touch-LCD-7, capacitive touch, 800x480, ESP32-S3 N16R8 (16 MB flash, 8 MB PSRAM): https://www.amazon.com/s?k=Waveshare+ESP32-S3-Touch-LCD-7
+- Manufacturer: https://docs.waveshare.com/ESP32-S3-Touch-LCD-7
+- Manufacturer LVGL setup: https://docs.waveshare.com/docs/ESP32/ESP32-S3/ESP32-S3-Touch-LCD-7/Arduino/Arduino-LVGL-Demo
+- UART terminal and USB-UART selected with jumper; not two guaranteed independent UARTs. Exposed I2C uses GPIO8/9 with shared touch/IO-expander devices. Do not assume pins are free.
+
+## Initial radars — begin with one each
+1. Hi-Link LD2450, ~24 GHz target tracking: up to three tracks with X/Y (local planar only), approx 6m advertised range. UART high baud; verify actual model data. https://www.amazon.com/s?k=HLK+LD2450
+2. DFRobot C4001 SEN0609, 25m MOVING detection; stationary presence shorter (nominal 16m) and distance/speed, not precise XY. Manufacturer says UART 9600 and documents I2C 0x2A/0x2B; verify physical connector/pinout. https://www.amazon.com/s?k=DFRobot+SEN0609+C4001 ; https://wiki.dfrobot.com/sen0609/docs/20935
+3. DFRobot C4002 SEN0691, near-stationary human presence, not XY target tracking. https://www.amazon.com/s?k=DFRobot+C4002+SEN0691 ; https://www.dfrobot.com/product-3081.html
+
+## Candidate interfaces/controllers
+- SC16IS752 I2C-to-two-UART bridge: https://www.amazon.com/s?k=SC16IS752+dual+UART+module . Do not put high-baud LD2450 on bridge without throughput proof; place on a confirmed hardware UART first.
+- ESP32-S3 development boards for remote stations: https://www.amazon.com/s?k=ESP32-S3+DevKit+N16R8
+- TCA9548A I2C channel switch for device-address clashes: https://www.amazon.com/s?k=TCA9548A+I2C+multiplexer
+- RS485 transceivers or suitable long-cable interface if wired stations needed: https://www.amazon.com/s?k=isolated+RS485+module+3.3V
+
+## Pose and location
+- BN-880 GNSS + compass: https://www.amazon.com/s?k=Beitian+BN-880+GPS+compass (module variations exist; check interfaces & voltage).
+- BNO085 9-axis IMU: https://www.amazon.com/s?k=BNO085+9DOF+IMU (requires magnetic/heading calibration and integration; IMU alone is not absolute compass accuracy).
+- Optional u-blox ZED-F9P RTK-GNSS: https://www.amazon.com/s?k=ZED-F9P+RTK+GNSS+module (corrections/base station needed for cm-class performance).
+- Fixed remote sensors may use manually surveyed map coordinates + measured orientation rather than powered GNSS.
+
+## Thermal/obstacle/motion/other
+- AMG8833 8x8 IR thermal: https://www.amazon.com/s?k=AMG8833+thermal+sensor
+- MLX90640 32x24 IR thermal: https://www.amazon.com/s?k=MLX90640+thermal+camera+module
+- RPLIDAR A1 360-degree 2D LiDAR for exposed wall/obstacle outlines: https://www.amazon.com/s?k=SLAMTEC+RPLIDAR+A1
+- VL53L1X ToF narrow proximity: https://www.amazon.com/s?k=VL53L1X+distance+sensor
+- VL53L5CX multizone depth: https://www.amazon.com/s?k=VL53L5CX+sensor
+- LD2410C presence radar: https://www.amazon.com/s?k=HLK+LD2410C
+- DFRobot C1001 60 GHz specialized indoor sleep/fall: https://www.amazon.com/s?k=DFRobot+C1001+SEN0623
+- TI IWR6843ISK, advanced 3D point/track capable radar, nontrivial integration: https://www.amazon.com/s?k=IWR6843ISK
+- PIR AM312 motion: https://www.amazon.com/s?k=AM312+PIR+sensor
+- Ultrasonic JSN-SR04T: https://www.amazon.com/s?k=JSN-SR04T+ultrasonic+sensor
+- Magnetic door reed switch: https://www.amazon.com/s?k=magnetic+reed+switch+module
+- ADXL345 vibration/accelerometer: https://www.amazon.com/s?k=ADXL345+accelerometer+module
+- ESP32-S3 OV2640 camera / alternate camera interface: https://www.amazon.com/s?k=ESP32+S3+camera+OV2640 (CPU and privacy implications)
+- Environmental: BME280 temperature/humidity/pressure; SCD40 CO2; magnetic field/Hall sensor; air quality sensors. All optional; ensure appropriate power and interface.
+
+## Power and supplies
+- Certified 5V 3A power bank: https://www.amazon.com/s?k=USB+C+power+bank+5V+3A
+- HY2.0 3P/4P to Dupont compatible cable (first check what's included): https://www.amazon.com/s?k=HY2.0+4pin+Dupont+cable
+- Jumper and breadboard: https://www.amazon.com/s?k=Dupont+jumper+wire+kit ; https://www.amazon.com/s?k=breadboard+prototype+PCB+kit
+- 32GB microSD: https://www.amazon.com/s?k=32GB+microSD+card
+- IP65 plastic enclosure & cable glands: https://www.amazon.com/s?k=IP65+plastic+electronic+project+box ; https://www.amazon.com/s?k=PG7+waterproof+cable+gland
+- Later: protected 12V LiFePO4 and adequately rated 12-to-5V buck converter; solar/charging only with matched BMS/charger: https://www.amazon.com/s?k=12V+LiFePO4+battery+BMS ; https://www.amazon.com/s?k=12V+to+5V+DC+DC+buck+converter
+- Remote battery runtime = battery Wh / measured average input W x real derating; no invented runtime before measuring.
+
+## Physical limitations
+Four orientations at 90-degree spacing give nominal horizontal overlap for >90-degree sensor beams; beam sensitivity is nonuniform, so blind spots require real tests. Different models have different vertical beams. A 24 GHz radar beam isn't a precise wall scanner; human body shadowing and multipath make walking, through-wall and through-floor results unreliable. Multiple same-band sensors may interfere. Thermal sensors detect surface emitted heat, not through normal walls. LiDAR maps optically visible surfaces, not hidden interior studs. GPS does not provide accurate indoor floor assignment; sensor location should show uncertainty. Orientation needs calibration.

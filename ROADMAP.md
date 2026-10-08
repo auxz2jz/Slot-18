@@ -1,0 +1,30 @@
+# Roadmap
+Status legend: PLANNED / IN PROGRESS / CANDIDATE / VERIFIED / BLOCKED / DEFERRED.
+A test passing does not make a candidate user-VERIFIED.
+
+## Milestones
+- v0.1.0 [CANDIDATE] Standalone browser radar UI + simulated telemetry, normalized measurement core, JSONL diagnostic export, simple guided visual testing.
+- v0.2.0 [PLANNED] ESP32-S3 7-inch touchscreen bring-up using Waveshare-supported ESP-IDF example and LVGL; no radar needed, UI simulated on hardware.
+- v0.3.0 [PLANNED] Single LD2450 UART: framed packets, unit/axis verification, live XY dots, disconnected state, logs and replay tests.
+- v0.4.0 [PLANNED] C4001 SEN0609 driver; range, motion, presence with truthful uncertainty; confirm UART/I2C hardware details.
+- v0.5.0 [PLANNED] C4002 SEN0691 driver; test still/sitting detection and false positives.
+- v0.6.0 [PLANNED] SC16IS752 bridge if needed; test sustained 256k serial LD2450 directly on internal UART, slower sensors on bridges; validate on actual board.
+- v0.7.0 [PLANNED] Sensor fusion without inventing position; configurable mounts, headings, overlap, interference testing.
+- v0.8.0 [PLANNED] BNO085 IMU/compass + magnetometer calibration + walking/stationary indications. Static obstacles/body masking explicitly tested.
+- v0.9.0 [PLANNED] One battery-powered remote node using ESP-NOW/local Wi-Fi; authenticated telemetry, offline handling, battery measurement.
+- v1.0.0 [PLANNED] Five remote nodes; manual survey coordinates or GNSS; maps show station uncertainty and measurement uncertainty.
+- later [PLANNED] Four-direction tower, up to 12 active radars; test before expanding to eight/24; optional thermal (MLX90640), LiDAR floor plan, camera, 3D radar, RTK, air-quality and environment sensors.
+
+## Out of scope for initial milestone
+- Actual 7-inch display firmware, on-device APK, outdoor waterproofing, precise people location from range-only reports.
+- Guarantee of detection through walls, floors, cars or metal; human-vs-animal classification.
+- Automated alarms used as safety-critical evidence.
+
+## Purchasing sequence
+1. Touchscreen + USB power, ONE LD2450 (optional C4001/C4002 if purchased together).
+2. SC16IS752 only after direct UART and board interface review; compatible cables and logic-level/power budget.
+3. GNSS + calibrated orientation + small ESP32 node + safe battery solution; one node first.
+4. LiDAR/thermal and additional sector copies only following field results.
+
+## Test strategy
+See docs/DIAGNOSTICS_AND_TESTING.md. At each milestone write real compile/test evidence and a handoff checkpoint. Never move LAST VERIFIED without user testing.

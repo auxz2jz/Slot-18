@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Slot-18 | Radar Simulator v0.1.0</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main class="layout">
+  <header>
+    <div><div class="eyebrow">SLOT-18 · HANDHELD MULTI-SENSOR</div><h1>Radar Console <span>v0.1.0</span></h1></div>
+    <strong class="simtag">SIMULATED ONLY · NO LIVE RADAR</strong>
+  </header>
+  <section class="controls" aria-label="Simulation controls">
+    <label for="headingSelect">Sensor facing</label>
+    <select id="headingSelect"><option value="0">North (0°)</option><option value="90">East (90°)</option><option value="180">South (180°)</option><option value="270">West (270°)</option></select>
+    <button id="toggle">Pause simulation</button>
+    <button id="testBtn">Test This Version</button>
+    <button id="exportBtn">Export diagnostics</button>
+  </section>
+  <section class="panels">
+    <article class="panel radar">
+      <div class="panelheader"><strong>Top-down radar</strong><span id="mode" class="live">SIMULATION RUNNING</span></div>
+      <canvas id="scope" width="600" height="460" aria-label="Simulated XY target scope"></canvas>
+      <p class="note">Dots = LD2450 simulated XY measurements. Presence-only radars are intentionally NOT drawn as target dots. Grid range: 10 m.</p>
+    </article>
+    <aside class="panel">
+      <h2>Sensor readings (simulated)</h2>
+      <div class="sensor"><div><b>LD2450</b><span>XY movement tracking</span></div><strong id="ld">—</strong></div>
+      <div class="sensor"><div><b>C4001 SEN0609</b><span>Range / movement indication</span></div><strong id="c1">—</strong></div>
+      <div class="sensor"><div><b>C4002 SEN0691</b><span>Near-stationary presence</span></div><strong id="c2">—</strong></div>
+      <div class="status"><p id="facing">Facing North</p><p id="summary">No real sensors connected</p><p id="diagCount">0 diagnostic events</p></div>
+      <p class="note">Other directions, multiple remote stations, GPS, thermal, LiDAR and battery telemetry are roadmap features, not active hardware.</p>
+    </aside>
+  </section>
+  <section id="testPanel" class="panel testing" hidden>
+    <h2>Guided Test — v0.1.0 software candidate</h2>
+    <p id="testStep"></p>
+    <button id="passBtn">PASS (I checked)</button>
+    <button id="failBtn">FAIL (I checked)</button>
+    <button id="closeTestBtn">Close test</button>
+    <p id="testProgress"></p>
+  </section>
+  <footer>Not a verified human identification, through-wall sensing, safety or rescue device. This is a user-interface and data-model demonstration.</footer>
+</main>
+<script src="./core.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>
