@@ -33,3 +33,12 @@ A test passing does not make a candidate user-VERIFIED.
 
 ## Test strategy
 See docs/DIAGNOSTICS_AND_TESTING.md. At each milestone write real compile/test evidence and a handoff checkpoint. Never move LAST VERIFIED without user testing.
+
+## Android and web extension roadmap (PLANNED, no source or APK created)
+- F-020 / F-025: Design a versioned sensor API preserving real-vs-simulated state, actual measurement capabilities, station identities, last seen and uncertainty.
+- F-020: ESP32 direct offline Wi-Fi access point and read-only browser radar view, using bounded authenticated WebSocket-like telemetry. Prove local mode first.
+- F-021 / F-022: Independent native Android implementation: use Wi-Fi for full radar graphics, BLE for discovery/pairing/settings/small telemetry, with independently verified APK.
+- F-023: Router/hotspot local-network mode and multiple authorized viewers; test wireless coexistence with eventual remote station mesh.
+- F-024 / F-027: Optional remote internet viewing over authorized encrypted VPN gateway or outbound relay; no direct open internet access by default.
+- F-028: Possible installable browser PWA for phone/PC; native Android app still preferred when robust BLE is needed.
+- All new client work follows docs/REMOTE_ACCESS_AND_CLIENTS.md and shared feature/interface docs. No change to existing untested v0.2.0 firmware source.
