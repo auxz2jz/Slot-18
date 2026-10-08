@@ -42,3 +42,12 @@ See docs/DIAGNOSTICS_AND_TESTING.md. At each milestone write real compile/test e
 - F-024 / F-027: Optional remote internet viewing over authorized encrypted VPN gateway or outbound relay; no direct open internet access by default.
 - F-028: Possible installable browser PWA for phone/PC; native Android app still preferred when robust BLE is needed.
 - All new client work follows docs/REMOTE_ACCESS_AND_CLIENTS.md and shared feature/interface docs. No change to existing untested v0.2.0 firmware source.
+
+## Battery/case scope — new user-defined 2/4-slot protected LiPo cartridge system (PLANNED)
+- POWER-01: Define protected 1S pouch LiPo modular cassette, mechanically keyed recessed spring / blind-mate contacts, mechanical CAD and fit/short-test without live LiPo cells.
+- POWER-02: Pick per-pack charger/protection plus per-slot independent ideal-diode/MUX power sharing; calculate 5V power budget and require ANY installed adequate pack to support worst-case load.
+- POWER-03: Prototype remote 2-bay hot-swap system on bench supplies/electronic load first, then correctly protected packs, testing swap in/out, reverse current, brownout, faults, and current/temperature; independent charging dock.
+- POWER-04: Scale validated architecture to handheld 4-bay removable case, preserving wall USB testing and regulated 5V device input (not Waveshare PH2.0 multi-pack wiring).
+- POWER-05: Add per-bay SoC, measured runtime estimate, pack aging/SoH where supported and battery diagnostics to remote telemetry and handheld/web/Android UI.
+- POWER-06: Evaluate optional in-device independent multi-channel charging with safe input/current/thermal limits after standalone dock works.
+- Design specification: docs/HOT_SWAPPABLE_LIPO_POWER_SYSTEM.md. No milestones automatically coded until earlier firmware bring-up verified.
