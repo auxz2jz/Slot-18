@@ -73,3 +73,10 @@ See docs/DIAGNOSTICS_AND_TESTING.md. At each milestone write real compile/test e
 - BP-03 Expand selector to handheld 2-4 cartridges with validated path ratings and no pack backfeed. Keep individual cartridge channels separate, preserve pack identity and SoC limitations.
 - BP-04 External USB-C/PD and solar-regulated 5V supply **directly powers device**, with priority MUX over cartridge backup and independent per-cartridge charge-enable/power budget. Check IP5328P charging disables boost and unexpected solar or wall removal does not reboot the ESP32.
 - BP-05 Bench tests of source insertion/extraction, sleep/wake and delayed output restoration, true USB-C PD vs 5V-only pogo charging, solar fluctuation, short/thermal protection, telemetry, and 5V rail with real loads. Full plan: docs/DEVICE_SIDE_POWER_BACKPLANE.md. Software candidate stays unchanged.
+
+
+## 2026-10-09 Handoff pause — NO IMPLEMENTATION
+- Entire project paused at user's request to stop research loop and save for another chat.
+- Read **`NEXT_CHAT_HANDOFF.md`** FIRST for status, context, all pending hardware decisions and exact resume paths.
+- No circuit design approved, no board validated, no electrical bench tests, no working firmware v0.2.0 compile (failure at missing esp_random.h declaration), and no user-VERIFIED baseline. Do not re-explain or redo the same board-search comparisons without new primary-source evidence.
+- On new instruction: narrow to one question and finish it before additional module research; preserve recoverability. Battery track: manufacturer-led compatibility audit of Waveshare Solar Power Manager (D); firmware track: minimal esp_random.h include fix followed by CI and later real hardware testing.
