@@ -1,3 +1,21 @@
+# Current project memory — physical bench checkpoint (2026-10-27)
+
+**Read `NEXT_CHAT_HANDOFF.md` FIRST.** Detailed hardware results: [docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md](docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md). This section supersedes dated "hardware NONE"/"no user verified baseline" statements below while preserving them as historical records.
+
+- **Task ID:** S18-HW-20261027-01, current blocker: C4002 UART communication through SC16IS752. User requested CHECKPOINT ONLY / new conversation.
+- **User-VERIFIED physical baseline:** Waveshare ESP32-S3-Touch-LCD-7 Rev1.2 **factory** touchscreen demo powered and touch/typing worked (factory Wi-Fi/SD self-check FAILED). **NOT** a verified Slot-18 application firmware version.
+- **Known recovery artifact:** user's local original 16MB flash backup `waveshare_factory_16MB.bin` at `%USERPROFILE%\Documents\Slot18_Backup\`; byte count 16777216, SHA256 `2791680bf3923804b04b55b237aea83e38af3981a9c224ab7ddc0b4cf6684a21`. Restoration NOT tested; original is NOT in GitHub.
+- **Working physical benches:** C4002 and CJMCU-752 on +4.9V breadboard power with common GND and separated touchscreen USB supply; Arduino IDE Waveshare native profile, CH343 UART1 COM3. Screen I2C at 3.3V soldered selector. I2C device at 0x4D; bridge UART A/B scratchpad PASS; bridge A/B internal loopback PASS. Full readings in detailed checkpoint.
+- **Latest failure:** C4002 read-only version UART query over CJMCU received 66 unframed/garbled bytes on 1.8432MHz hypothetical clock or 8 zero bytes on 14.7456MHz hypothetical clock; neither passes response header/checksum. Actual board crystal not read from marking. Last user multimeter readings C4002 TX–GND and CJMCU RXA–GND fluctuate 0.5–1.0V on both instruments; UART byte correctness NOT determined, radar presence/distance NOT verified.
+- **Equipment physically received:** one Hi-Link LD2450 V1.1 (untested), one DFRobot C4002 SEN0691 (powered only, serial unresolved), two purple CJMCU-752 dual-UART bridges (one in bench test), breadboards 830/400, two HW-131-type power units, jumper wires, multimeter(s), oversized ABS project case. Initial reversed breadboard-colored power rails discovered and corrected; confirm polarity before wiring.
+- **Repository production code unchanged in this chat:** browser v0.1.0 candidate automated tests passed previously, firmware ESP-IDF v0.2.0 CI still fails from `esp_random.h` missing declaration; no user-verified custom live radar UI or firmware package. User Arduino sketches exist on Windows locally only.
+- **Last explicit direction:** write handoff, update GitHub, **STOP** for new conversation. Next if authorized: verify actual CJMCU oscillator before correct 115200 baud and C4002 frame capture, not repeated guesses. One bounded diagnostic at a time.
+- **Prior design update:** original 1S4P hot-swappable battery cartridge architecture in October 9 documents is historical and superseded by user preference for normal 18650 cells (handheld ~8–16, remotes ~4–8), unselected protection/power-path; no verified battery build. User has enclosure too big, future cameras/thermal are still planned.
+
+---
+
+## Earlier historical project memory (through 2026-10-09)
+
 # Project Memory / Recovery Checkpoint
 Date: 2026-10-07 (America/Los_Angeles)
 Repository: auxz2jz/Slot-18
