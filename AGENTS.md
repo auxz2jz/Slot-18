@@ -8,7 +8,7 @@ Read and obey the **current canonical** master library at https://github.com/aux
 6. CROSS_PLATFORM_COLLABORATION_STANDARD.md when multiple platforms are built
 Then read this repo's PROJECT_MEMORY.md, ROADMAP.md, docs/ARCHITECTURE.md and docs/DIAGNOSTICS_AND_TESTING.md BEFORE changing code.
 
-Project: handheld 7-inch ESP32-S3 touchscreen + modular radar and non-radar sensor system, up to 5+ battery remote stations and eventually four 3-radar direction groups. First version is simulated browser UI only. Actual ESP32 board/drivers/pinout, sensor interoperation and battery performance must be tested after hardware arrives. No hardware is user-verified.
+Project: handheld 7-inch ESP32-S3 touchscreen + modular radar and non-radar sensor system, up to 5+ battery remote stations and eventually four 3-radar direction groups. Browser first version remains simulated; ESP-IDF application firmware is unverified. **As of 2026-10-27, actual Waveshare factory screen/touch IS user-verified**, CJMCU-752 I²C and internal dual-UART loopbacks passed Arduino diagnostics, but C4002 external UART and radar readings are NOT verified. Start with root `NEXT_CHAT_HANDOFF.md` and `docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md`; previous no-hardware assertions are historical.
 
 Hard constraints:
 - Do not call simulator measurements live, and do not plot presence-only observations as precise target dots.
