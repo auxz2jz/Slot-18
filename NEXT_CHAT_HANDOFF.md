@@ -1,3 +1,67 @@
+# NEXT CHAT HANDOFF — Slot-18 — 2026-10-27 (LATEST / READ FIRST)
+
+**TASK:** User requested "make a handoff and save all your progress to the GitHub for starting a new conversation." THIS IS A DOCUMENTATION-ONLY CHECKPOINT. Do not resume flashing, rewiring, building, researching products or editing working code until instructed in the next conversation.
+
+**Repository:** https://github.com/auxz2jz/Slot-18 — default branch main.
+**Detailed authoritative physical bench log:** [docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md](docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md).
+**Development rules:** [AGENTS.md](AGENTS.md) and https://github.com/auxz2jz/master-instruction-library. Read rule index, core recovery, diagnostics, guided testing, Codex efficiency, and cross-platform standard before code changes. Project memory and roadmap follow.
+
+## CURRENT EXACT STATE (supersedes older "hardware NONE" below)
+
+User HAS assembled and physically tested Waveshare ESP32-S3-Touch-LCD-7 Rev1.2 N16R8 on USB-C, and one DFRobot C4002 radar via purple SC16IS752 CJMCU-752 I²C-to-UART board on externally powered breadboard. Factory Waveshare screen demo powered up and touch/typing **user-verified**. Factory demo's Wi-Fi/SD self-tests reported FAILED (not diagnosed). User owns an untested LD2450 radar, second CJMCU-752, spare small breadboard and supply, plus oversized ABS project enclosure.
+
+The factory demo was backed up to the user's Windows PC *before* uploading serial-only Arduino diagnostics. Complete 16MB `waveshare_factory_16MB.bin`, **16,777,216 bytes**, SHA256 `2791680bf3923804b04b55b237aea83e38af3981a9c224ab7ddc0b4cf6684a21`, location `%USERPROFILE%\Documents\Slot18_Backup\`. Backed-up flash **not restore-tested**. NEVER commit binary/private credentials. Display now likely **blank** while diagnostic sketch runs; this is expected and not evidence that display failed.
+
+Current hardware: screen physical UART selector UART1; programming USB-C UART1 through Windows **CH343 COM3**; ESP32-S3, 16MB flash and 8MB PSRAM verified by esptool v5.6.0 (Arduino output used separate esptool v5.3.1); Windows Python 3.14.9. Native Arduino board profile `Waveshare ESP32-S3-Touch-LCD-7` with 16MB flash, PSRAM enabled. Rev1.2 touchscreen I²C voltage is factory solder-strap on **3V3** (NOT plug-in jumper); screen I²C SDA GPIO8, SCL GPIO9. Screen's I²C red VCC disconnected/insulated, common GND wire connected to breadboard, touchscreen powered separately via USB-C. Breadboard + rail voltage 4.9V measured at both sensor and bridge VCC; initial red/blue rail mismatch was corrected. User soldered C4002 and bridge headers. Physical pin wiring as described by user is in detailed document.
+
+### PASS / NOT YET PASS
+
+| Diagnostic | Evidence and meaning |
+|---|---|
+| Waveshare factory screen/touch | **USER-VERIFIED PASS**: graphics, buttons, typing. Factory Wi-Fi + SD self-check FAILED/unknown cause |
+| C4002 powered | **PASS**: ~4.9V at VIN/GND; LED blinking, no obvious static VIN–GND short; actual radar detection unverified |
+| CJMCU powered | **PASS**: ~4.9V at VCC/GND; no obvious static short |
+| Arduino upload / serial COM3 | **PASS**, backup performed and checksum recorded before uploads |
+| I²C discovery | **PASS**: UART bridge ACK at `0x4D`; onboard `0x20–0x27`, `0x30–0x3F`, `0x5D` also present |
+| Both bridge UART scratchpad registers | **PASS**: `UART A: REGISTER TEST PASS`; `UART B: REGISTER TEST PASS` |
+| Both UART internal loopbacks | **PASS**: `UART A: LOOPBACK PASS`; `UART B: LOOPBACK PASS`; proves internal chip path only |
+| **Actual C4002 UART communication** | **NOT VERIFIED**: read-only C4002 version request did not return validated frame |
+| ESP-IDF production v0.2.0 | **UNVERIFIED SOURCE CANDIDATE**. CI previously failed on missing `esp_random.h` include, still not fixed; no tested built production image |
+| Browser prototype v0.1.0 | Automated tests passed before current chat; not user visually verified |
+
+### Current blocking evidence / next task S18-HW-20261027-01
+
+Most recent serial sketch sent **C4002 version query** with SC16IS752 UART A and tested two hypothesized oscillator/divisor settings. Serial output:
+```text
+Slot-18 C4002 UART Diagnostic
+Testing crystal: 1.8432 MHz
+Received 66 UART bytes
+47 5E F0 DF 9E 06 87 00 ... (garbled; no FA F5 AA A5 validated header)
+No verified version response
+Testing crystal: 14.7456 MHz
+Received 8 UART bytes
+00 00 00 00 00 00 00 00
+No verified version response
+Diagnostic complete.
+```
+**User's LATEST measurement immediately before this handoff:** two multimeters, one red probe C4002 TX black C4002 GND, the other red probe SC16IS752 RXA black bridge GND, both readings fluctuating ~0.5–1.0V. This is **not a UART byte capture or proof** of correct serial signal integrity, logic high, 115200 baud or detection. No reset/command change done to radar.
+
+**FIRST NEXT ACTION ONLY after requested resume:** verify marking/clock frequency of actual CJMCU-752 crystal, then use bounded line status and RX capture test at matching divisor / protocol; potentially isolate TTL TX line or use USB-to-TTL analyzer. Check whether sensor UART TX idle has sensible 3.3V logic, and if physical UART wiring or stale bytes are cause. Do **NOT** rerun the same ineffective two-clock sketch without new evidence, and do not assume reverse-polarity damaged the C4002. Mark PASS only on correct checksum/framed sensor response. Then move to live C4002 motion/presence/range readings (never invent XY coordinates), then separately LD2450.
+
+**Safety:** Switch power OFF before wiring; verify breadboard positive & negative with meter (user previously discovered the HW-131 mounted reversed relative to colored rails). Do NOT tie touchscreen USB VCC to externally driven positive 5V rail. Common grounds yes. Keep additional sensors disconnected while troubleshooting.
+
+### Reconciled longer-term plans — not implemented
+
+User has in hand a project box that proved much too large; would prefer a smaller DIY ABS box. Wants radars mounted behind uncoated ABS without antenna obstruction; nylon adhesive PCB clips/standoffs may be used, C4002 mounting holes ~M2; LD2450 edge clips preferable. Future visible + IR/NoIR + thermal image overlay/switching, with desired person thermal detection 50–100 ft, thermal optics/higher-res camera still research only. Prior discussion *changed away from* bulky custom hot-swappable 1S4P battery cartridges to ordinary protected 18650 cells (8–16 handheld, 4–8 remote), eventual 12V barrel shared vehicle/wall input, regulated protected buses, charge while operating. Exact circuit, battery series/parallel, BMS, fuses, cameras, thermal, power-path **UNSELECTED AND UNTESTED**; historical power architecture in the prior handoff below is superseded as user intent and must not be implemented blindly. For initial bench, keep main screen on USB-C and radars on verified 5V supply.
+
+### Handoff instructions for NEXT chat
+
+Read THIS latest block and [detailed bench checkpoint](docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md), then project-specific and global rules. Treat **only the factory display/touch baseline** as user-verified visually, and UART register/loopback tests as user-supplied tool diagnostics. No Slot-18 working custom live radar UI exists. Diagnostic sketches live on user's Windows Arduino IDE, not committed to firmware/esp-idf. Do not claim a restore from full-flash BIN was exercised. Preserve test evidence; make one atomic step at a time, obey anti-loop. Suggested next model/reasoning: medium for single hardware probe; high only if persistent multi-source driver/oscillator/protocol ambiguity.
+
+---
+
+## HISTORICAL HANDOFF — 2026-10-09 (ARCHIVED; superseded status, retain old design notes)
+
 # NEXT CHAT HANDOFF — Slot-18 — 2026-10-09
 
 **Mode:** CHECKPOINT ONLY. The user explicitly said **"Stop you're in a loop"** and then instructed: **"we reached limit for this chat please save all work and the GitHub save your current progress and prepare for another chat to take over."** No further coding, repeated research, battery purchases or unasked changes are authorized in this handoff.
