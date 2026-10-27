@@ -1,3 +1,22 @@
+# 2026-10-27 real-hardware milestone update (CURRENT)
+
+Prior milestone forecasts below remain conceptual; the user has now **physically received** Waveshare Rev1.2 touchscreen, C4002 SEN0691, LD2450, two CJMCU-752 modules, breadboard/power supplies and oversized enclosure. See `NEXT_CHAT_HANDOFF.md` and `docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md` FIRST.
+
+**Verified / evidence-backed:**
+- HW-01 [USER-VERIFIED] Waveshare factory display boots and touch/typing work; factory Wi-Fi/SD self-tests failed, not diagnosed.
+- HW-02 [USER-REPORTED PASS] C4002 powered at ~4.9V; no obvious short; LED activity but detection NOT proven.
+- HW-03 [TOOL-PROVEN PASS] Arduino compiled/uploaded through CH343 COM3. User backed up original 16MB flash (check hash in handoff). Restore not tested.
+- HW-04 [TOOL-PROVEN PASS] ESP32 finds CJMCU-752 at I2C 0x4D via SDA GPIO8 / SCL GPIO9. CJMCU UART channels A/B scratchpad read/write PASS and internal UART loopback PASS.
+- HW-05 [BLOCKED] External serial bridge UART A ↔ C4002. Version request had **no validated reply**, 66 garbled bytes / 8 zero bytes from attempted clock divisor choices. Two multimeters read 0.5–1.0V fluctuating at C4002 TX and CJMCU RXA; DMM does not decode UART. Radar TX/RX connectivity, actual oscillator and frame protocol still unverified.
+
+**Next atomic action S18-HW-20261027-01 [PENDING USER RESUME]:** verify CJMCU-752 actual crystal and UART RX idle/logic level and baud divisor, then a *different* bounded serial test with line-status/error counts and checksum verification. Do not repeat identical failed diagnostic without new evidence. Do not change radar configuration/reset as a first response. Continue to parsed C4002 target/distance only after verified physical link, then LD2450 separately. Device display currently serial-only Arduino diagnostic, NOT functional Slot-18 UI.
+
+**Firmware track remains separate:** ESP-IDF v0.2.0 source candidate CI failed at missing `#include "esp_random.h"` (never patched in this chat). Browser prototype automated tests previously passed but UI has no user confirmation.
+
+**Enclosure / power / imaging plans:** current ABS enclosure oversized; future smaller enclosure. Camera overlay/IR/thermal target 50–100ft discussed but hardware not integrated; old Li-ion removable four-cell cartridge details below are HISTORICAL, superseded by user's preference for conventional 18650 cells and a future protected modular power path (electrical solution not chosen). No remote node, Android app or sensor fusion implemented.
+
+---
+
 # Roadmap
 Status legend: PLANNED / IN PROGRESS / CANDIDATE / VERIFIED / BLOCKED / DEFERRED.
 A test passing does not make a candidate user-VERIFIED.
