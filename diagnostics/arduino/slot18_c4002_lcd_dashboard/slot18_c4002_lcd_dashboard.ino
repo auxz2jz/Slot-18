@@ -1,6 +1,6 @@
 /*
  Slot-18: LIVE C4002 RADAR DASHBOARD ON WAVESHARE 7-INCH LCD
- Candidate S18-RADAR-LCD-V1-20261110 — UNTESTED ON USER HARDWARE
+ Candidate S18-RADAR-LCD-V2-20261110 — I2C driver fix, NOT YET USER VERIFIED
 
  Built on Waveshare's ESP32-S3-Touch-LCD-7 Arduino
  10_lvgl_v9_demo.ino (LVGL 9.5 + ESP32_Display_Panel)
@@ -33,7 +33,8 @@
  See README.md in this directory. All other proven firmware preserved.
 */
 #include <Arduino.h>
-#include <Wire.h>
+#include <driver/i2c.h>   // Legacy IDF driver used by Waveshare CH422G expander
+#include <freertos/FreeRTOS.h>
 #include <esp_display_panel.hpp>
 #include <esp_err.h>
 #include <lvgl.h>
@@ -62,19 +63,21 @@ static lv_obj_t *frameText=nullptr;
 
 uint8_t addr(uint8_t reg) { return (uint8_t)(reg<<3); } // channel A=0
 
+// ESP32_Display_Panel's Waveshare CH422G expander uses the legacy I2C
+// driver in this installed library stack. Arduino Wire on core 3.3
+// pulls in the new driver and crashes before setup ("driver_ng CONFLICT").
+// Share its ALREADY INITIALIZED I2C port 0; do not install I2C again.
+static const i2c_port_t RADAR_BUS=I2C_NUM_0;
+static const TickType_t I2C_TIMEOUT=pdMS_TO_TICKS(100);
 bool writeReg(uint8_t r, uint8_t v) {
-  Wire.beginTransmission(BRIDGE);
-  Wire.write(addr(r));
-  Wire.write(v);
-  return Wire.endTransmission()==0;
+  const uint8_t msg[2]={addr(r),v};
+  return i2c_master_write_to_device(
+      RADAR_BUS,BRIDGE,msg,sizeof(msg),I2C_TIMEOUT)==ESP_OK;
 }
 bool readReg(uint8_t r, uint8_t &v) {
-  Wire.beginTransmission(BRIDGE);
-  Wire.write(addr(r));
-  if(Wire.endTransmission(false)!=0) return false;
-  if(Wire.requestFrom((uint8_t)BRIDGE,(uint8_t)1,(uint8_t)true)!=1) return false;
-  v=(uint8_t)Wire.read();
-  return true;
+  const uint8_t reg=addr(r);
+  return i2c_master_write_read_device(
+      RADAR_BUS,BRIDGE,&reg,1,&v,1,I2C_TIMEOUT)==ESP_OK;
 }
 uint16_t u16(const uint8_t *p) { return (uint16_t)p[0] | ((uint16_t)p[1]<<8); }
 uint32_t u32(const uint8_t *p) { return (uint32_t)p[0] | ((uint32_t)p[1]<<8) | ((uint32_t)p[2]<<16) | ((uint32_t)p[3]<<24); }
@@ -234,10 +237,10 @@ void renderData() {
 void setup() {
   Serial.begin(115200);
   delay(1600);
-  Serial.println("\nSLOT-18 / WAVESHARE LIVE RADAR LCD v1");
+  Serial.println("\nSLOT-18 / WAVESHARE LIVE RADAR LCD v2 (I2C compatibility)");
   Serial.println("DISPLAY ONLY: no radar configuration writes.");
-  // Single Arduino Wire interface is initialized before LCD and bridge.
-  Wire.begin(8,9,100000);
+  // No Wire; board->begin() initializes the old I2C bus 0 (GPIO8/9)
+  // for its backlight/reset CH422G. Radar bridge shares that bus.
 
   Board *board=new Board();
   if((board==nullptr)||!board->init()) {
@@ -289,8 +292,10 @@ void setup() {
     uiReady=true;
   }
   Serial.println("LCD DASHBOARD READY; starting C4002 link...");
-  Wire.beginTransmission(BRIDGE);
-  if(Wire.endTransmission()!=0) {
+  uint8_t probeResult=0;
+  const uint8_t probe=addr(REG_LSR);
+  if(i2c_master_write_read_device(
+       RADAR_BUS,BRIDGE,&probe,1,&probeResult,1,I2C_TIMEOUT)!=ESP_OK) {
     Serial.println("RADAR BRIDGE NOT FOUND: CJMCU-752 I2C 0x4D");
     renderData();return;
   }
