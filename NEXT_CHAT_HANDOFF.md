@@ -1,3 +1,15 @@
+# 2026-11-10 — Next user-facing milestone: VISUAL LIVE PLOTTER (NEW CANDIDATE, NOT YET HARDWARE TESTED)
+
+- User said to continue and specifically wants **visible/tangible results rather than only hidden configuration milestones**. Deliver short, one-test-at-a-time instructions, ideally an immediately changing visual display, not long feature lists.
+- Created NEW, separate read-only Arduino sketch `diagnostics/arduino/slot18_c4002_live_plotter/slot18_c4002_live_plotter.ino` at commit `b1ebc50d9b10ea81f1443cfb5c8ed073533dbaa4`.
+- Based on previously user-verified continuous C4002 sensor notification decoder, with exact physical Waveshare ESP32-S3 / CJMCU SC16IS752 I2C 0x4D, SDA GPIO8 SCL GPIO9, UART A 115200. Outputs only plotter-compatible labeled numeric fields every 500ms; no C4002 configuration frame and no modifications to other working sketches. Fields: `Presence_m` (stationary/presence range 0–11m), `Motion_m`, `Radar_state` (0=none/unknown,5=presence report,10=motion report), `Data_OK` (11 if valid notification <=5s ago; else 0). Null/zero is NOT proof that there is physically no target: may be no link, insufficient energy or return. Printed numbers on same scale and axes; watch distance traces change while moving a hand or walking toward/from sensor. Environmental clutter, metal, animals can confound human identification and distance.
+- **Not yet Arduino compiled, flashed, or physically tested.** Basic structural checks passed (balanced braces, recovered prior parser/bridge helpers, no radar sensor write calls). The first user test: download sketch; Arduino IDE compile/upload; close Serial Monitor and open **Tools > Serial Plotter** (115200 baud) while using Waveshare **UART CH343 USB-C port**; observe labeled colored graph scrolling live. User can send screenshot or paste plotter values. If no curves, check connection and note whether `Data_OK` line is 11 vs 0. This is on their *PC Serial Plotter*, not the Waveshare built-in touchscreen yet.
+- **Future after plotter verified**: move these same live data fields onto the Waveshare's actual 7-inch touchscreen using proper board LCD and LVGL setup; avoid introducing untested display dependencies prematurely.
+- Latest sensor baseline confirmed restored: Motion MID1; Presence MID1; Range 0..1100cm; disappearance hold 15s; 80cm resolution (read-only audited); user-verified all four prior config controls complete. Next hardware config resolution test deferred intentionally for visible output.
+- User prefers concise single-stage tasks and no power tangent.
+
+---
+
 # 2026-11-10 — C4002 DISAPPEARANCE DELAY RESTORED TO 15s (FULL USER-VERIFIED PASS)
 
 - User pasted direct hardware Serial Monitor evidence for delay-control `diagnostics/arduino/slot18_c4002_delay_control/slot18_c4002_delay_control.ino`, proving the **full 15s -> 5s -> 15s** round trip via separate explicit `PLAN DELAY` and `CONFIRM` actions:
