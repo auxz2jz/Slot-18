@@ -1,3 +1,20 @@
+## Known runtime crash and v2 fix (2026-11-10)
+
+The user's FIRST LCD-dashboard upload compiled successfully but **LCD was completely blank**. User uploaded ~6,553 Serial Monitor lines; >250 cycles immediately printed:
+```
+E (152) i2c: CONFLICT! driver_ng is not allowed to be used with this old driver
+abort() was called ...
+Rebooting...
+```
+No `SLOT-18` splash/debug output was emitted: abort before Arduino `setup()`. A separate core dump CRC warning appears *after* abort and is likely secondary, not proof of broken flash or damaged hardware.
+
+**Cause:** installed `ESP32_Display_Panel` / CH422G I/O-expander drives legacy ESP-IDF I2C, while our original sketch imported Arduino `Wire.h`, which on recent Arduino-ESP32 core imports the *new* I2C driver. The two are incompatible in one binary. This precisely matches [Espressif library issue #206](https://github.com/esp-arduino-libs/ESP32_Display_Panel/issues/206).
+
+**Fix v2 (candidate, uncompiled and untested after fix):** the `slot18_c4002_lcd_dashboard.ino` sketch was modified at commit `6249e0869c800a0b05203d267ea0bf9a7ad9f3fb`: remove the Arduino `Wire` import/usage and instead access the radar bridge via `driver/i2c.h` legacy `i2c_master_write_to_device` and `i2c_master_write_read_device`, **sharing** the existing legacy I2C0 bus configured by `board->begin()` for mandatory CH422G expander on GPIO8/9. No new host driver install, no changes to proven radar sensor settings, wiring, or other sketches. The manufacturer uses the expander for display controls; do not disable it.
+
+**First bounded next step for user:** Get updated `.ino` from this folder (not the old local copy). Replace only `slot18_c4002_lcd_dashboard.ino` in the existing Arduino sketch folder, leaving `esp_panel_board_custom_conf.h`, `esp_lv_adapter_arduino.h` and `.cpp` untouched. Close/reopen changed sketch in Arduino IDE, click **Verify only**. Send FIRST compile error or say pass. After pass, upload and check Waveshare LCD + Serial for `SLOT-18 ... v2`. If boot still conflicts, collect first 20 serial lines and library versions. Do not remove `Wire` from any previously user-verified standalone radar sketches; they do not import LCD legacy-driver library.
+
+---
 # Slot-18 — Waveshare 7-inch live radar dashboard (candidate v1)
 
 **Status:** NEW / source-assembled / NOT Arduino-compiled or user-hardware tested. Preserve proven sketches elsewhere under `diagnostics/arduino/`.
