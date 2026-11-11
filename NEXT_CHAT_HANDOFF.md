@@ -1,3 +1,9 @@
+# 2026-11-10 — Physical test conditions clarified by user
+
+During the user-run 25-second C4002 live capture (32 valid frames, 0 errors), **the radar remained stationary**. User was **seated nearby and moving a hand up/down and toward/away from the sensor**. Do not characterize this capture as user walking or a measured-distance calibration. PRESENCE/MOTION transitions are consistent with motion in the scene but cannot identify which reflected object produced each reported range or prove hand/person identity. Next guided test: stationary seated interval, controlled hand toward/away motion, then vacate target area and check eventual NO_TARGET; later compare readings at tape-measured 1/2/3m positions. No new hardware/code change or new sensor validation from this clarification.
+
+---
+
 # 2026-11-10 — USER-VERIFIED replacement C4002 live UART test PASSED
 
 **New user-provided Arduino Serial Monitor output:** `Slot-18 C4002 LIVE READ-ONLY TEST (25 seconds)` started normally, printed `Bridge ACK; UART A 115200 8N1, divisor 1`, and finished:
