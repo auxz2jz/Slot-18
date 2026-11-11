@@ -1,3 +1,13 @@
+# 2026-11-10 — C4002 live detection test environment: clutter/metal/feline targets
+
+- User clarified physical building environment contains **wire shelving/rack, microwave, TV, DVR, many other stored objects, multiple cats**, and **aluminum-faced reflective solar/insulation paneling on approximately half of the building roof**. The user was ~20 ft away in another room off to the right of outward-facing upright C4002. This is not a controlled empty target area.
+- These factors introduce plausible **static metal reflectors / multipath and occlusion**; cats may create true animal motion/presence returns. Environmental fans or appliance motion remain only hypotheses, not confirmed user observations. Metal reflections do not alone prove occupancy, and no identification of any reflection/cat/person from C4002 telemetry is possible.
+- Reinterpret prior continuous 17-minute run: excellent wired UART communications (`valid=1084, bad=0, I2C_errors=0` at t=1021s) but frequent PRESENCE **cannot be classified as false positives or human through-wall detection** due to clutter and cats. Nominal 120-degree sensor cone is not a proof of absolute off-axis isolation where reflections are possible.
+- **Recommended next test:** keep current continuous sketch/wiring unchanged; aim board face at a less cluttered area away from large metal/foil surfaces where possible; compare ~1m/2m/3m measured stationary versus moving returns with pets excluded from test zone where practical, record presence of fans/reflections and NO_TARGET after vacating test area. Do not change radar thresholds/calibration/configuration before the cleaner baseline.
+- User specifically requested deferring power supply wiring questions.
+
+---
+
 # 2026-11-10 — C4002 sensor orientation confirmed by user (physical bench)
 
 - User confirms the C4002 SEN0691 board was **upright and vertical**, **gold antenna patches and logo facing outward toward the doorway**, and **pins at the bottom**, essentially as in the earlier reference photo. This answers the mounting/orientation question: forward face was horizontal toward doorway, not pointing at ceiling.
