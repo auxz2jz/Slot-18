@@ -1,3 +1,25 @@
+# 2026-11-10 — USER-VERIFIED C4002 RANGE WRITE 0–1100cm -> 0–500cm; RESTORATION PENDING
+
+User pasted full serial log demonstrating successful explicit operator-confirmed first RANGE WRITE using `diagnostics/arduino/slot18_c4002_range_control/slot18_c4002_range_control.ino`. Relevant new lines:
+```
+CURRENT RANGE: 0..1100 cm
+PROPOSED RANGE: 0..1100 -> 0..500 cm
+Type CONFIRM within 60 seconds to change this setting.
+Or CANCEL to leave current range unchanged.
+APPLYING RANGE 0..1100 -> 0..500 cm (one radar WRITE)...
+WRITE ACK: radar reported success.
+READBACK RANGE: 0..500 cm
+VERIFIED: intended detection range is active.
+Original hardware range is 0..1100 cm.
+To restore: PLAN RANGE 0 1100, then CONFIRM.
+```
+- **Physical hardware status: USER-VERIFIED PASS** for paired minimum/maximum detection-range WRITE (DFRobot cmd 0x86) and independent successful readback. Current *last verified* radar detection range: **0–500cm (0–5m)**. This supersedes prior note saying RANGE WRITE untested. **Restoration has NOT YET been verified**. Other original settings: Motion MID 1, Presence MID 1, delay 15 seconds, 80cm gates (previously independently verified; not re-read in this latest session).
+- **IMMEDIATE NEXT guided test**: with same working sketch and UART USB-C CH343 Serial Monitor 115200 / Newline, send `PLAN RANGE 0 1100`, check proposes `0..500 -> 0..1100 cm`, send `CONFIRM` within 60s, then `STATUS`; expect `READBACK RANGE: 0..1100 cm` and final status 0–1100cm. Capture result. If unexpected output, do NOT assume restored.
+- Verified firmware behavior is configuration write/readback, **not** measured distance detection performance or target identity. No hardware wiring/source changes needed. Existing working continuous, audit and sensitivity control sketches preserved.
+- Continue respecting user's one-step test preference; no discussion of power supply until requested.
+
+---
+
 # 2026-11-10 — RANGE CONTROL READ-ONLY BOOT AND MANUAL STATUS: USER-VERIFIED PASS
 
 User shared exact Serial Monitor output for the separate range-control firmware `diagnostics/arduino/slot18_c4002_range_control/slot18_c4002_range_control.ino`:
