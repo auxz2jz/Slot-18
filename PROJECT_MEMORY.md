@@ -1,3 +1,22 @@
+# 2026-11-10 — USER-VERIFIED C4002 MOTION SENSITIVITY RESTORATION COMPLETE
+
+- User uploaded Serial Monitor `Pasted text(20261111-024332).txt` (217 lines). Latest appended lines 200–216 show `PLAN MOTION MID` initiated with `CURRENT MOTION: LOW (0)`, `PROPOSED MOTION: LOW -> MID`, then separately `CONFIRM` accepted and `WRITE ACK: radar reported success`, `READBACK MOTION: MID (1)`, `VERIFIED: intended setting is active.`
+- Subsequent **manual STATUS**:
+```
+STATUS: current radar sensitivity groups:
+  Motion  = MID (group 1)
+  Presence= MID (group 1)
+  Link diagnostics: valid_frames=391 bad=0 notices=377 UART_errors=0 I2C_errors=0
+  Original hardware snapshot: MOTION MID, PRESENCE MID.
+  NO sensor settings changed by STATUS.
+```
+- **Result: USER-VERIFIED PASS** for the complete C4002 motion preset control round-trip: original MID (1) -> LOW (0) (write ACK + readback) -> MID (1) (write ACK + readback), then independent STATUS confirms both motion and presence MID and zero communication errors. Last prior GitHub checkpoint saying restoration pending is now SUPERSEDED. Do not assert sensitivity changes were behaviorally calibrated; setting update is proven, not detection-performance curve.
+- Candidate source `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` has been hardware-tested for motion writes, readback and manual STATUS. **Presence writes untested**, along with LOW/HIGH response effectiveness; no automatic sensor calibration attempted.
+- User's original baseline remains: Motion MID, Presence MID, detection 0–1100cm, disappearance hold 15 seconds, resolution 80cm. Text config backup `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`.
+- Recommended single next test: `PLAN PRESENCE LOW` then review proposed MID -> LOW, `CONFIRM` within 60s, check readback and report; then restore via `PLAN PRESENCE MID` + `CONFIRM` and `STATUS` (separate stage). No code or wiring change; working original continuous monitor and audit intact.
+
+---
+
 # 2026-11-10 — PHASE B FIRST SENSOR WRITE VERIFIED: MOTION MID -> LOW (restoration pending)
 
 - User uploaded Arduino Serial Monitor log `Pasted text(20261111-024217).txt`, 200 lines, showing after successful sensitivity control startup and manual STATUS:
