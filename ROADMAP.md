@@ -1,3 +1,29 @@
+# 2026-11-10 — C4002 RANGE CONTROL COMPLETE, ORIGINAL 0–1100cm RANGE RESTORED
+
+User pasted direct ESP32-S3 Arduino Serial Monitor evidence (after previous successful `PLAN RANGE 0 500` / `CONFIRM`) showing restored range:
+```
+CURRENT RANGE: 0..500 cm
+PROPOSED RANGE: 0..500 -> 0..1100 cm
+Type CONFIRM within 60 seconds to change this setting.
+Or CANCEL to leave current range unchanged.
+APPLYING RANGE 0..500 -> 0..1100 cm (one radar WRITE)...
+WRITE ACK: radar reported success.
+READBACK RANGE: 0..1100 cm
+VERIFIED: intended detection range is active.
+
+STATUS: current C4002 radar detection range:
+  Range min=0 cm (0.00 m), max=1100 cm (11.00 m)
+  Link diagnostics: valid=158 bad=0 notices=147 UART_errors=0 I2C_errors=0
+  Original verified range=0..1100 cm.
+  STATUS is READ ONLY; no settings changed.
+```
+- **RANGE CONTROL USER-VERIFIED COMPLETE**: original 0..1100cm -> experimental 0..500cm -> restored 0..1100cm, each with write ACK and independent readback; final manual STATUS confirms restored value. Last checkpoint's "restoration pending" is **SUPERSEDED**.
+- The original configurations are restored for Motion MID1, Presence MID1, Range min 0cm max 1100cm. Disappearance delay last read 15s, resolution last read code0 80cm. No change to those latter settings made in any experiment, but they were not re-read in this range session.
+- Physical detection accuracy/cutoff not measured, just sensor accepted configuration.
+- Next anticipated separate bounded milestone: user-confirmed control for **target disappearance delay** (DFRobot cmd0x84, baseline15s), with safe read-only initial test, single confirmed change, readback, and explicit restoration to 15s; preserve all user-verified Arduino sketches untouched.
+
+---
+
 # 2026-11-10 — USER-VERIFIED C4002 RANGE WRITE 0–1100cm -> 0–500cm; RESTORATION PENDING
 
 User pasted full serial log demonstrating successful explicit operator-confirmed first RANGE WRITE using `diagnostics/arduino/slot18_c4002_range_control/slot18_c4002_range_control.ino`. Relevant new lines:
