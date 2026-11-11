@@ -1,3 +1,13 @@
+# 2026-11-10 — User confirmed intentional bridge power-off caused continuous-run I2C gaps
+
+- User explicitly stated they **switched off the breadboard power supply a couple of times while repositioning the setup to prevent damage** during the continuous C4002 monitor recording. The monitor's I2C errors at approximately t=15s in one run and t=135s in another are therefore **consistent with intentionally removing CJMCU-752 power while ESP32 USB/monitor remained live**. These log entries do not on their own establish module failure or an intermittent electrical defect.
+- Keep prior raw counts, including 3870 I2C failed-read attempts, 1 overrun and 1 framing error in the first session; interpret them in the context of power cycling. The second continuous session provided **134 valid radar frames with zero checksum/UART/I2C errors through 121s**; verified NO_TARGET then MOTION/PRESENCE events, plus continuous 30s summaries.
+- **Status:** C4002 wired UART A and read-only continuous monitor **USER-VERIFIED functional** for multiple minutes while powered. Long-duration uninterrupted reliability and range accuracy not yet formally validated. Do not revise code or change hardware based on deliberate outages.
+- **Recommended next action:** keep all connections stationary and both board and bridge powered for a longer uninterrupted bench run (e.g. 3–5 minutes) with at least several SUMMARY lines, then tape-measured ranges and presence/motion absence; observe any new errors *without power changes*. Fully disconnect both USB and breadboard power before rewiring or repositioning the powered circuit; leave the screen red I2C VCC lead insulated.
+- Continue using `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino`; last user-verified bounded 25s sketch preserved separately. Screen custom UI/touch controller 0x5D and LD2450 remain separate work.
+
+---
+
 # 2026-11-10 — Continuous C4002 physical test: sustained data PASS; intermittent CJMCU I2C outage UNKNOWN CAUSE
 
 **Source:** user-uploaded `Pasted text(20261111-012731).txt` (319 lines), user's own live Serial Monitor evidence; no user-stated circumstances of power removal/unplugging. Separate previous bounded 25s logs appear at file start; interpret **TWO** independent continuous monitor startup banners, not one uninterrupted run.
