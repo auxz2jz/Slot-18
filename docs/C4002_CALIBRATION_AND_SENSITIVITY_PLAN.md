@@ -2,7 +2,7 @@
 
 Date: 2026-11-10
 Task: S18-C4002-CTRL-20261110-01
-Status: **PHASE A USER-VERIFIED PASS (6/6 configuration reads, zero errors)** — original settings captured in `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`. **PHASE B CANDIDATE** `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` (commit `2544503484f8c8f7e8d150561d3e004b5d9e4617`) adds operator-confirmed single-sensitivity-preset adjustment and readback, but has **not been compiled or hardware-tested**. Existing user-verified `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino` and independently verified `diagnostics/arduino/slot18_c4002_settings_audit/slot18_c4002_settings_audit.ino` remain unchanged.
+Status: **PHASE A USER-VERIFIED PASS (6/6 configuration reads, zero errors)** — original settings captured in `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`. **PHASE B USER-VERIFIED PASS for motion/presence LOW/MID write, readback and restoration** — `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` (commit `2544503484f8c8f7e8d150561d3e004b5d9e4617`), user-tested on physical radar; HIGH, CUSTOM and behavioral detection effects remain untested. Existing user-verified `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino` and independently verified `diagnostics/arduino/slot18_c4002_settings_audit/slot18_c4002_settings_audit.ino` remain unchanged.
 
 ## Why
 
@@ -56,3 +56,9 @@ The user ran the six-query audit and obtained 6/6 successful replies with zero t
 Next experimental sketch: `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` is **candidate only** and needs Arduino IDE compile + physical UART testing before any claims. On boot it reads both sensitivity presets, no C4002 writes. `STATUS` is repeatable read-only; `PLAN MOTION LOW|MID|HIGH` or `PLAN PRESENCE LOW|MID|HIGH` arms a proposed change for up to 60s. `CONFIRM` must be typed separately to write a single group, then fetches immediate sensor readback. `CANCEL` aborts. There is no automatic rollback or guarantee that values reset on power loss. User can explicitly restore original MID individually. Range/hold-time/environmental calibration writes remain unavailable in this candidate.
 
 First test should be **read-only**: compile, flash on same board, open UART USB-C CH343 Serial Monitor at 115200, view startup status and send `STATUS` using Newline; verify both current groups MID, zero I2C errors. If that fails, do not attempt `PLAN` or `CONFIRM`. No wiring or power changes needed.
+
+## 2026-11-10 closeout: Phase B completed and baseline restored
+
+The user successfully tested `PLAN MOTION LOW` / `CONFIRM` / readback `LOW`, restoration `PLAN MOTION MID` / `CONFIRM` / readback `MID`, then separately the same MID -> LOW -> MID cycle for PRESENCE. Final manual `STATUS` in user-uploaded `Pasted text(20261111-024612).txt` showed **Motion MID 1; Presence MID 1; valid_frames=575; bad=0; notices=551; UART_errors=0; I2C_errors=0**. Verified control writes and configuration changes, not measured real-world detection effectiveness.
+
+**Next milestone**: select single new bounded capability — read-before/write/readback/restore of distance range (from baseline 0–1100cm) first, then target disappearance delay (baseline 15s), as separate operator-confirmed steps. No calibration until unoccupied environment and sensor confirmation are available. Or switch to physical touchscreen hardware bringup as an independent stream. Keep existing working firmware source files intact.
