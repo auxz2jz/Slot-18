@@ -2,7 +2,7 @@
 
 Date: 2026-11-10
 Task: S18-C4002-CTRL-20261110-01
-Status: **SPECIFICATION ONLY** — no configuration-control firmware has been written, compiled, flashed or hardware-verified. Existing user-verified `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino` remains unchanged.
+Status: **PHASE A READ-ONLY AUDIT CANDIDATE CREATED** — `diagnostics/arduino/slot18_c4002_settings_audit/slot18_c4002_settings_audit.ino` (commit `5fb1cfb371197354672731199ad7db2c28c12366`) reads current settings without applying calibration or changing radar configuration. It has NOT been compiled, uploaded, or tested by the user. Existing user-verified `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino` remains unchanged.
 
 ## Why
 
@@ -45,6 +45,6 @@ Manufacturer references:
 
 ## Current next action
 
-Leave the working `slot18_c4002_continuous.ino` unchanged. User said further physical experiments are for later. Before actual configuration code, verify the installed sensor firmware's command/response support and build read-only snapshot/audit; do not assume DFRobot's direct UART Arduino library will directly work through an SC16IS752 I2C bridge. Manual protocol adapter is required. No immediate hardware test requested.
+**Next user test, when convenient:** Verify/upload the separate read-only audit sketch. It sends six one-shot manufacturer READ requests via the existing SC16IS752 UART-A adapter: software version (0x82), motion and presence threshold group (two 0x87 reads with gate types 0/1), detection range (0x86), disappearance delay (0x84), and range resolution (0x66). Each has a bounded 2.5s response wait and validates checksum, frame length, type, response code and sensitivity gate before displaying values. The sketch does not persist a snapshot; capture the entire Serial Monitor output for baseline. Check that each query returns a successful response before implementing writes. After testing, the original continuous monitor can be reuploaded. The DFRobot native UART Arduino library cannot directly communicate through SC16IS752 I2C; the diagnostic uses the proven manual bridge adapter. Do not auto-calibrate or send sensor-setting writes until original values are read and verified.
 
 Recommended coding setting: Medium effort for individual UART bridge read-only commands, escalate High only if protocol replies/bridge I2C prove unexpectedly complex.
