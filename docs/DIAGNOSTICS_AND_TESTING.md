@@ -59,3 +59,16 @@ Persist diagnostic sessions, correlation IDs, crash/watchdog evidence, per-featu
 - NVS event ring stores the last 32 events, user-action events cause flash writes; later we can move high-frequency telemetry to a non-wearing queue and export on demand.
 - Without RTC/network time, diagnostic timestamps are monotonic elapsed milliseconds and session IDs; do not claim UTC.
 - Source data is always simulator in v0.2.0. No actual LD2450 frame checking, CRC, UART pin assignment or capture exists yet.
+
+## C4002 continuous bridge live test — S18-DIAG-20261110-CONTINUOUS-01 (candidate; 2026-11-10)
+
+- **Firmware:** `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino`, commit `af2e3af25f20d0fa45afe71a04f28b15432188c8`. Separate from user-verified bounded 25-second original. Not compiled or user-tested yet.
+- **Trigger:** Upload using previously verified Waveshare board/16MB partition/PSRAM Enabled/COM3 settings. Open Serial Monitor 115200, reset once if opening missed startup.
+- **Wire baseline:** CJMCU 0x4D on GPIO8 SDA / GPIO9 SCL, 1.8432MHz bridge crystal, UART A divisor 1 for 115200 8N1, shared ground and correctly verified 5V breadboard supply; red Waveshare I2C VCC lead disconnected and insulated.
+- **Output:** Live checksum-checked type 0x04 cmd 0x60 notification reports, range/status/speed, NO_TARGET (radar observation, no stale range), NO NEW DATA (5-second communication stale warning, distinct from NO_TARGET), 30s SUMMARY counters of received bytes, checksum failures, line and I2C errors, last detection packet age.
+- **Guided check 1 (UART/continuous):** Confirm bridge ACK and stream continues *beyond 60 seconds*, at least two 30-second SUMMARY lines with valid detection counts increasing and no ongoing errors. Mark success only from observed data, not upload success.
+- **Guided check 2 (motion):** At stationary radar, sit nearby and move hand toward/away; record status/distance changes. Target association is **unknown**, so do not conclude hand tracking.
+- **Guided check 3 (absence):** Vacate detection area and wait 20–30 seconds or longer according to actual radar configured delay. Record NO_TARGET if observed. If still PRESENCE, note surroundings/reflections and do not automatically report failure. A NO NEW DATA message is transport loss, NOT successful no-target detection.
+- **Guided check 4 (accuracy, later):** Compare radar's distance at physically measured positions (e.g., 1,2,3m); keep presence distance separate from motion distance.
+- **Stop:** Close Serial Monitor to stop local display; firmware still runs while powered. Remove power or upload a different sketch to stop firmware. No display or touch tests implied.
+- **Evidence:** Save a concise log slice including startup, several detections, two SUMMARY reports, and absence outcome. Label user-verified only after physical test.
