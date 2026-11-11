@@ -1,3 +1,14 @@
+# 2026-11-10/11 — LD2450 CP2102 UART raw data on COM4; next step decode 256000 frames
+
+User soldered **HLK-LD2450** four wires, visually confirmed module labels: purple -> 5V, brown -> GND, red -> sensor RX, orange -> sensor TX. Continuity each good and isolated. USB-TTL generic CP2102 red HW-598A adapter labels: USB adapter TXD -> red sensor RX; RXD -> orange sensor TX; GND -> brown; +5V -> purple; adapter 3V3 unconnected. User measured **5.05–5.06V** +5V idle, TXD=**3.25V**, RXD=**3.15V** with sensor disconnected; subsequently confirmed **~5V still under load** after powering LD2450. Safety reminder: CP2102 source current capability not determined from voltage alone, check heating / supply if abnormal.
+
+User opened PuTTY on **COM4**, **256000 8N1**, saw **a bunch of incoherent characters**: expected for 30-byte binary LD2450 frames, *raw serial traffic present but no validated frames yet*. Don't infer targets valid until decoded. User has unplugged Waveshare LCD to free USB; working LCD v2 remains in Github and untouched.
+
+**Read-only Python binary decoder committed** to `diagnostics/python/slot18_ld2450_serial_decoder.py` SHA `1c8c3dc5a14b3731284460c2adf091e44c572044`. Header AA FF 03 00, three targets 8 bytes each, footer 55 CC, frame30, x/y signed magnitude in mm, speed signed magnitude cm/s, resolution mm; default baud256000 COM4. Prints coordinates and errors; never transmits commands or changes sensor configuration. Also wrote downloadable local `/mnt/data/slot18_ld2450_serial_decoder.py`; self-tested against Hi-Link published 30-byte sample showing X=-782mm, Y=1713mm, speed=-16cm/s, resolution320mm. Manufacturer: https://r0.hlktech.com/download/HLK-LD2450-24G/1/HLK%20LD2450%201T2R%E8%BF%90%E5%8A%A8%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E8%BF%BD%E8%B8%AA%E6%A8%A1%E7%BB%8D%E6%98%8E%E4%B9%A6%20V1.01.pdf
+
+**NEXT:** Close PuTTY completely (exclusive serial port). Download decoder file into Downloads, open PowerShell there, `py -m pip install pyserial` if needed; `py .\\slot18_ld2450_serial_decoder.py COM4`. Ask user to share 5-10 decoded target lines or first error; note if Python not installed, do not overwhelm; handle once surfaced. No flashing/baud reconfiguration before valid data. Preserve working C4002 LCD firmware and standalone diagnostics.
+
+---
 # 2026-11-10/11 — LCD live radar Serial log independently confirms FIRST stable integrated demo
 
 User supplied the COMPLETE startup log and ~44 periodic `LIVE:` records for the newly running v2 LCD firmware after selecting **Arduino ESP32 core 3.1.3**, **16MB flash**, **OPI PSRAM**, and uploading. Exact startup:
