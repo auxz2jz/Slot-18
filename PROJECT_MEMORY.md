@@ -1,3 +1,13 @@
+# 2026-11-10 replacement C4002 and read-only I2C diagnostic (CURRENT)
+
+- User replaced the previously unresponsive DFRobot C4002 SEN0691 with the same model. Reports RUN and OUT indicator activity only. Replacement's UART, presence and range not tested; power rail voltage on replacement not yet remeasured.
+- Same Waveshare 7in board and CJMCU-752 bridge remain. Red I2C VCC wire on screen is intentionally DISCONNECTED and should be insulated; connect only common GND, SDA and SCL. Screen powered by USB-C. Never assume colored breadboard rail polarity is correct.
+- New `diagnostics/arduino/slot18_i2c_discovery/slot18_i2c_discovery.ino` source candidate saved on GitHub, commit `106cadfda990bc63e0b3beb523e19eef43140807`. It scans I2C for 0x4D bridge and 0x5D touchscreen, no C4002 UART requests. NOT compiled/flashed/user-verified.
+- Next: run read-only scan, capture serial output; if bridge path passes inspect actual module crystal marking then targeted C4002 serial diagnostics. Main blocker remains S18-HW-20261027-01. Prior failed C4002 test applies only to old sensor.
+- No new custom display firmware or live radar UI. Preserve original 16MB factory firmware private Windows backup.
+
+---
+
 # Current project memory — physical bench checkpoint (2026-10-27)
 
 **Read `NEXT_CHAT_HANDOFF.md` FIRST.** Detailed hardware results: [docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md](docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md). This section supersedes dated "hardware NONE"/"no user verified baseline" statements below while preserving them as historical records.
