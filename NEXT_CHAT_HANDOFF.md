@@ -1,3 +1,13 @@
+# NEXT CHAT HANDOFF — Slot-18 — 2026-11-10 (NEW SENSOR / TEST PENDING)
+
+**Read this note first, then the detailed 2026-10-27 checkpoint below.** User has replaced the DFRobot C4002 SEN0691 radar with another C4002 of the same model. User reports RUN and OUT indicator activity on the replacement. This is NOT a verified UART handshake, detection, or power-voltage measurement on the replacement. Waveshare screen and CJMCU-752 bridge are unchanged. Screen's loose **red I2C VCC lead must remain DISCONNECTED and insulated** while screen is powered via its USB-C; share ground/SDA/SCL only. Recheck actual breadboard rail polarity with meter before powering the replacement (old reversed-rail incident). No new user-verified C4002 serial success.
+
+**Current atomic diagnostic:** Confirm PC/Arduino IDE port and verify I2C bus after reassembly using new read-only diagnostic candidate at `diagnostics/arduino/slot18_i2c_discovery/slot18_i2c_discovery.ino`. Expected CJMCU I2C ACK `0x4D` and touch controller `0x5D`; scan alone does not test external radar UART, make the display show UI, or validate radar reporting. Program not yet compiled or run by user; test results pending. If the I2C path passes, return to task **S18-HW-20261027-01**: inspect actual SC16IS752 breakout oscillator marking (rather than reusing guessed oscillator settings), then bounded UART status/framing test at confirmed divisor; mark PASS only on valid framed/checksummed C4002 data. No sensor configuration resets or unrelated code changes.
+
+**Repository change:** diagnostic sketch committed as `106cadfda990bc63e0b3beb523e19eef43140807` (source candidate, not a physical test). Previous 16MB factory flash backup still on user's Windows machine; restore untested. Previous factory display/touch PASS and SC16IS752 internal loopbacks PASS remain historical evidence; no new production firmware compile or live radar UI. Continue one test at a time; obey anti-loop rule.
+
+---
+
 # NEXT CHAT HANDOFF — Slot-18 — 2026-10-27 (LATEST / READ FIRST)
 
 **TASK:** User requested "make a handoff and save all your progress to the GitHub for starting a new conversation." THIS IS A DOCUMENTATION-ONLY CHECKPOINT. Do not resume flashing, rewiring, building, researching products or editing working code until instructed in the next conversation.
