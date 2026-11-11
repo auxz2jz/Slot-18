@@ -1,3 +1,31 @@
+# 2026-11-10 — Phase B sensitivity control boots, queries both groups: USER-VERIFIED READ-ONLY STARTUP PASS
+
+- User uploaded Serial Monitor paste `Pasted text(20261111-023743).txt`, 183 lines. First t=24..119s prior continuous program, then an ESP-ROM reboot and previous standalone settings-audit 6/6 PASS, then **a second reboot** followed by latest `SLOT-18 C4002 SENSITIVITY CONTROL — CONFIRM REQUIRED` candidate. Interpret only the lines after that second boot as the new control test, not the earlier session lines.
+- Actual new program startup:
+```
+SLOT-18 C4002 SENSITIVITY CONTROL — CONFIRM REQUIRED
+No automatic C4002 writes. STATUS is read-only.
+Bridge OK; UART A 115200, 8N1.
+
+STATUS: current radar sensitivity groups:
+  Motion  = MID (group 1)
+  Presence= MID (group 1)
+  Link diagnostics: valid_frames=3 bad=0 notices=1 UART_errors=0 I2C_errors=0
+  Original hardware snapshot: MOTION MID, PRESENCE MID.
+  NO sensor settings changed by STATUS.
+
+COMMANDS (Serial Monitor 115200, Newline):
+STATUS; PLAN MOTION LOW|MID|HIGH;
+PLAN PRESENCE LOW|MID|HIGH; CONFIRM; CANCEL; HELP
+PLAN does NOT change radar; CONFIRM performs ONE write after re-reading.
+Restore original group with PLAN MOTION MID or PLAN PRESENCE MID.
+```
+- **Verification status:** Phase B sensitivity-control candidate `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` **user-compiled/uploaded, startup and READ-ONLY motion+presence STATUS verified** via CJMCU-752; expected UART read frames working and zero link errors. **No user-input interactive `STATUS` command nor `PLAN` / `CONFIRM` or actual setting writes/readback tested yet**. No sensor settings changed. Baseline values MID / MID are still verified. Existing continuous monitor and read-only settings audit untouched.
+- **Guided next test:** send **one serial command `STATUS`** in Arduino Serial Monitor with newline, 115200, to verify interactive command processing; this does not change sensor settings. Once it responds, progress to a single explicitly confirmed motion sensitivity LOW test and independent restoration to MID, with immediate checksum-validated readback; do not adjust presence simultaneously or auto-calibrate. Any unexpected response: stop before writing. Keep 60-second PLAN expiry in mind: do not ask user to PLAN and wait for reply in a future turn; instruct plan-and-confirm as one test only when ready.
+- Correct hardware USB-C: Waveshare port labeled UART (CH343) rather than native USB port, which previously led to COM mismatch/blank monitor.
+
+---
+
 # 2026-11-10 — USER VERIFIED: C4002 settings audit PASS, baseline saved; phase B candidate created
 
 **Actual user-uploaded Serial Monitor log:** `Pasted text(20261111-022934).txt` (157 lines). The first ~103 lines are output from previous CONTINUOUS sketch (t=24..119 s); a visible new ESP-ROM boot separator follows, then the NEW read-only settings audit banner. User previously had plugged the native ESP32-S3 USB port, yielding COM5 and blank UART Serial Monitor; switched to correct Waveshare **UART USB-C CH343** and output returned. No firmware or board wiring fault implied.
