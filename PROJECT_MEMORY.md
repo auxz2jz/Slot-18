@@ -1,3 +1,9 @@
+# 2026-11-10 — Continuous C4002 candidate (S18-DIAG-20261110-CONTINUOUS-01)
+
+Continuous UART diagnostic source: `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino` (new GitHub commit `af2e3af25f20d0fa45afe71a04f28b15432188c8`, ~220 lines), **CANDIDATE/UNCOMPILED/NOT YET USER-TESTED**. Preserves the last USER-VERIFIED 25-second original `diagnostics/arduino/slot18_c4002_live_readonly/slot18_c4002_live_readonly.ino` unchanged. Uses same proven CJMCU-752 0x4D, 1.8432MHz crystal, UART A at 115200 8N1; prints continuously, reports NO_TARGET separately from NO DATA (5s), 30s counters and throttled I2C faults; NO radar configuration commands. See NEXT_CHAT_HANDOFF and docs/DIAGNOSTICS_AND_TESTING.md for verification guide. Next: verify and upload, watch still/hand-movement then vacate area, check sustained 30s summaries and no UART errors; then measured distance accuracy. Previous physical test 32/32 valid is baseline only. Recommended next coding model: Medium reasoning; escalate if evidence indicates intermittent I2C/UART loss.
+
+---
+
 # 2026-11-10 — USER-VERIFIED replacement C4002 live UART test PASSED
 
 **New user-provided Arduino Serial Monitor output:** `Slot-18 C4002 LIVE READ-ONLY TEST (25 seconds)` started normally, printed `Bridge ACK; UART A 115200 8N1, divisor 1`, and finished:
