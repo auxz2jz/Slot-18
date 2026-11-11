@@ -66,3 +66,26 @@ The user asks whether two LD2450s mounted orthogonally could add a third coordin
 **Substantial practical challenges:** both operate in 24GHz band and with a third C4002 interference may be nontrivial; both LD2450s default to 256000bps UART (unusable as-is on current 1.8432MHz SC16IS752 bridge at normal baud). The IMU corrects orientation of the handheld, not world position. Z only measurable for targets observed by both LD2450s within overlap (~6m range); a C4002-only 8–11m observation still has distance but unknown bearing/elevation. More than one moving target requires reliable association; ghost detections must be distinguished. Verify one LD2450 live 2D first, later mount/test second and compare against known target heights/positions; only add confirmed 3D coordinates to UI when validated.
 
 Reference for 2D output protocol: Hi-Link HLK-LD2450 instruction manual section 6, reported target X, Y, speed and distance resolution: https://manuals.plus/m/374d7b6608cbce20e803b3aa4f405637826960c1ed42a858dedfaa97a3253478
+
+## 2026-11-10 — Off-the-shelf TRUE 3D radar alternatives (research, NOT selected/purchased)
+
+The user wants a ready-made, affordable radar that outputs X/Y/Z directly, without orthogonal twin-LD2450 fusion.
+
+**Preferred low-cost candidate: Hi-Link HLK-LD6004 60GHz 3D human presence/tracking sensor**. Manufacturer reports **up to 3 human tracks with x/y/z coordinates**, detects moving and stationary humans, wall/side-mount sensing up to **~6m**, ±60° azimuth/elevation, specified ~0.4m distance accuracy, UART **115200 8N1**, 3.3V operating voltage with ~135mA typical / up to 600mA specified current. Developer-friendly resources: community Arduino `swherdman/HLK-LD6004` parser for TinyFrame protocol and ESPHome `ld6004` native integration; no source changes needed just to research. Manufacturer listing approx **$7.28 bare module** and **$10.29 testboard/module/USB-UART kit** (prices not final incl shipping/tax); OpenELAB alternative listing approx $14.16 depending variant/availability. Prefer **test kit** for first desktop demo/verified X/Y/Z UART output before hooking into Waveshare's second SC16IS752 channel. The **115200 default** makes integration with user's existing **1.8432MHz CJMCU-752 UART B** significantly easier than LD2450 256000. **Safety: LD6004 is 3.3V, not a drop-in 5V C4002-style connection.** Do not revisit larger power supply system unless user asks.
+
+Caveats: Manufacturer docs aim at **fixed-wall or overhead human sensing** and relative local x/y/z estimation, **NOT validated moving-handheld 3D target mapping**; requires experiments during walking/turning with IMU (orientation correction) and test different targets. 0.4m indicated distance accuracy is not precise 3D map, 6m limit remains; UI should report last-seen/uncertain data honestly. 60GHz separated from 24GHz C4002 may reduce same-band issues but field tests needed. **Do not promise reliably detecting animals/inanimate objects** from a human-tracking firmware.
+
+**High-cost alternative: Texas Instruments IWR6843ISK / IWR6843AOPEVM** with supported 3D people tracking firmware, radar point-cloud and tracked objects. IWR6843ISK official demos have **6m default and 14m extended configurations** (performance depends on scene/firmware), with X/Y/Z/velocity processed onboard. Typical evaluation board **~$243–$283 through Mouser/DigiKey** currently. More flexible raw point-cloud than low-cost LD6004, but much more firmware, USB/UART-throughput and MCU integration work; TI's published reference design primarily assumes fixed mounting and PC visualizer. May not be appropriate for user's low-cost first prototype.
+
+**Not all inexpensive '60GHz presence' modules provide xyz**. E.g. generic 60GHz micro-motion devices and Acconeer XM125 are not automatic interchangeable 3D target tracking outputs. Verify official UART protocol advertises per-target x/y/z before purchase.
+
+References:
+- https://www.hlktech.com/en/Goods-347.html
+- https://hlktech.net/index.php?id=1392
+- https://github.com/swherdman/HLK-LD6004
+- https://next.esphome.io/components/sensor/ld6004/
+- https://www.ti.com/tool/IWR6843ISK
+- https://dev.ti.com/tirex/explore/content/radar_toolbox_4_00_00_05/source/ti/examples/Industrial_and_Personal_Electronics/People_Tracking/3D_People_Tracking/docs/3d_people_tracking_user_guide.html
+- https://www.digikey.com/en/products/detail/texas-instruments/IWR6843ISK/10434492
+
+**Next decision** is user choice of whether to order HLK-LD6004 test kit; no purchase action has occurred, no wiring has changed. Keep existing HLK-LD2450 and C4002 plans intact until real test data supports a change.
