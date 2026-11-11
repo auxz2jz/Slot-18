@@ -52,3 +52,9 @@ User clarified that C4002 and LD2450 **must both operate concurrently and be rep
 - **Person stops within 4m:** LD2450 moving-target track may vanish; C4002 can continue to report stationary micro-motion/presence in vicinity, but without left/right localization. Don't freeze an old LD2450 blip as known position without marking stale.
 
 References: https://wiki.dfrobot.com/sen0691/ ; https://www.dfrobot.com/product-3081.html ; https://manuals.plus/m/374d7b6608cbce20e803b3aa4f405637826960c1ed42a858dedfaa97a3253478 ; https://wiki.dfrobot.com/sen0691/docs/23398 .
+
+## Implementation blocker to solve before connecting both radars (UART baud clock)
+
+LD2450 factory UART baud is **256000 8N1**, and Hi-Link vendor serial protocol supports a persistent baud-rate setting **115200** (index `0x0005`; default 256000 index `0x0007`), requiring sensor restart to take effect. The user's CJMCU-752 SC16IS752 crystal is physically **1.8432MHz**, which provides ordinary UART divisor=1 maximum **115200 baud**, so **UART B cannot simply run default LD2450 at 256000 with that crystal**. Need one of two bounded solutions before concurrent firmware: (a) use direct ESP32-S3 hardware UART configured 256000 if suitable unused pins verified with RGB display, or (b) first configure LD2450 to 115200 using an appropriate known-working 256000 baud USB-to-UART adapter / hardware interface, verify persistent change, then connect to CJMCU UART B at 115200. Don't auto-modify LD2450's UART speed or lose access without an explicit plan/restore method. Do not suggest wiring UART B and claiming it will simply work at default speed.
+
+References: https://www.manualslib.com/manual/3439736/Hi-Link-Hlk-Ld2450.html?page=10 ; https://device.report/m/9725e6c2408e7de5b444a21528c902743d1d4777d01871ad8bb1ade086cd7300 ; NXP SC16IS752 UART generator datasheet.
