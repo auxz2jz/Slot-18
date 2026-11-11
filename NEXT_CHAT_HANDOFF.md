@@ -1,3 +1,11 @@
+# 2026-11-10 — C4002 sensor orientation confirmed by user (physical bench)
+
+- User confirms the C4002 SEN0691 board was **upright and vertical**, **gold antenna patches and logo facing outward toward the doorway**, and **pins at the bottom**, essentially as in the earlier reference photo. This answers the mounting/orientation question: forward face was horizontal toward doorway, not pointing at ceiling.
+- User was about **20 ft away, in another room, farther off to the right than the previous explanatory sketch**, separated by a wall; exact sensor-to-user bearing, angle, beam coverage through wall, and any intervening objects are NOT measured. The sensor's continued PRESENCE report does NOT prove detecting that user. Radar-reported presence distance often ~1.5-3m vs estimated user separation ~6m, so association is unverified.
+- Do not revisit board orientation unless new evidence. Next meaningful test: controlled empty-facing-space observation and measured-distance test to assess background reflections, off-axis detection and false presence. No wiring/code changes authorized or necessary. Single-USB-power question is deferred per user preference.
+
+---
+
 # 2026-11-10 — C4002 board mounting/orientation and test geometry clarification
 
 - User says the SEN0691 C4002 was apparently facing **out a doorway**; the user was about 20ft away in a different room, toward the **right** side of the sensor, separated by a wall, not directly along the sensor boresight. User uncertain about exact radar orientation: they say the printed label was facing forward/up and the 5 pins were at the bottom. **No physical photograph/level measurement from this specific mounting yet.**
