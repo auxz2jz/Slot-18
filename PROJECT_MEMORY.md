@@ -1,3 +1,30 @@
+# 2026-11-10 — LIVE PLOTTER USER-VERIFIED PASS; FIRST WAVESHARE LCD DASHBOARD CANDIDATE ADDED
+
+## User-provided hardware output (proven)
+The user pasted ~170 lines of `slot18_c4002_live_plotter.ino` output with `Data_OK:11` throughout, `Radar_state` switching between 0 (none), 5 (presence), and 10 (motion), and live distances changing. Examples:
+```
+Presence_m:1.75  Motion_m:0.86  Radar_state:10 Data_OK:11
+Presence_m:0.68  Motion_m:1.22  Radar_state:10 Data_OK:11
+Presence_m:2.97  Motion_m:0.00  Radar_state:5  Data_OK:11
+Presence_m:3.45  Motion_m:0.72  Radar_state:10 Data_OK:11
+Presence_m:1.37  Motion_m:0.00  Radar_state:5  Data_OK:11
+```
+- **USER-VERIFIED PASS for live sensor plotter output and command-free decoder**, changing motion and presence distance, recurring fresh radar notification arrivals. 0.68m repeats in reports; might be gating/reflectors, not a target certainty. `Data_OK:11` is a *non-zero numeric graph marker for recent valid data*, not eleven errors.
+- Cannot assert graph software itself was displayed from text alone; source prints plotter-compatible data, likely graphs. No reference to known person or true detection performance from this log.
+- User has ADHD and explicitly prefers **visible results**, brief one-step testing, not repeated long settings-only work.
+
+## NEW live LCD dashboard candidate (NOT COMPILED OR USER-TESTED)
+- Created completely separate `diagnostics/arduino/slot18_c4002_lcd_dashboard/slot18_c4002_lcd_dashboard.ino` commit `d7c9090cd778359ea819186009dfe6f4cc95b927`, and `README.md` commit `dff9ffe3a2ba1768801867bf599a604133d24cd4`.
+- Three local support files (manufacturer original Waveshare LVGL9 sample, retaining Apache license headers):
+  - `esp_lv_adapter_arduino.h` commit `c020af63eb5318b21b4e4641be2fa04994eed5d2`
+  - `esp_lv_adapter_arduino.cpp` commit `5fe0f6338f4846ad426364ee0fc1d173b49e4347`
+  - `esp_panel_board_custom_conf.h` commit `7dec71d16e0f4b3beda0bac3ccf2c7fd93420b82` **touch disabled** via `ESP_OPEN_TOUCH 0` only for first display + shared I2C stress test.
+- Based on official manufacturer `waveshareteam/ESP32-S3-Touch-LCD-7/examples/Arduino/examples/10_lvgl_v9_demo` (LVGL9.5 + ESP32_Display_Panel). Board is 800x480 RGB565 and uses I2C pins SDA8/SCL9 shared with CJMCU-752 radar bridge 0x4D. New sketch uses original user-tested notification parser and SC16IS752 UART A. On-screen: big panels for `PRESENCE DISTANCE` and `MOTION DISTANCE`, distance bars, reported radar state, fresh-link indicator and link errors. Does not send any C4002 config commands. Source structurally inspected but **NOT Arduino-compiled, not physically tested**. Potential build/link issues require user compile output and hardware testing. Touch temporarily disabled to avoid bus contention; add interactive controls only later.
+- **Next ONE user test**: open [LCD dashboard sketch](https://github.com/auxz2jz/Slot-18/blob/main/diagnostics/arduino/slot18_c4002_lcd_dashboard/slot18_c4002_lcd_dashboard.ino) in Arduino IDE with its three supporting files in same sketch folder; requires ESP32_Display_Panel + LVGL 9.5 and Waveshare ESP32-S3-Touch-LCD-7 Arduino core 3.x. Compile/upload using existing wiring + CH343 UART USB-C. Look for on-board 7-inch screen showing two distance bars and radar LIVE/WAITING. Serial expected `LCD DASHBOARD READY; starting C4002 link...` and `RADAR BRIDGE READY, UART A 115200.`; debug every 5s. Request photo or FIRST compile error. No code/source changes until error observed. Existing five proven config/monitor sketches plus newly user-verified plotter preserved.
+- Four config settings left at verified originals: motion MID(1), presence MID(1), range 0..1100cm, delay 15sec. Resolution mode was last read at 80cm and never modified. No power tangent.
+
+---
+
 # 2026-11-10 — Next user-facing milestone: VISUAL LIVE PLOTTER (NEW CANDIDATE, NOT YET HARDWARE TESTED)
 
 - User said to continue and specifically wants **visible/tangible results rather than only hidden configuration milestones**. Deliver short, one-test-at-a-time instructions, ideally an immediately changing visual display, not long feature lists.
