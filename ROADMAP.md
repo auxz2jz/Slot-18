@@ -1,3 +1,12 @@
+# 2026-11-10 — Live Arduino Serial Plotter GUI USER-VERIFIED with screenshot
+
+- User uploaded screenshot `Screenshot 2026-11-10 191918.png` of **Arduino IDE Serial Plotter on COM3** running the Slot-18 C4002 live plotter. User screenshot distinctly shows 4 visible plotted traces and checked legends: `Presence_m` (blue), `Motion_m` (orange), `Radar_state` (green), `Data_OK` (yellow); 115200 baud, RUN.
+- **USER-VERIFIED GUI PASS**: live chart displays moving distances; presence roughly 0.7–3.5m in this visible window, intermittent motion values 0–3.5m; radar state transitions 5↔10; link heartbeat `Data_OK` remains 11 during observed screenshot. This is **on PC Arduino Plotter, not yet Waveshare 7-inch LCD**. `Data_OK=11` is deliberate graph-scale marker for recent valid sensor packets, not 11 errors; `Radar_state` 5 presence or 10 motion (non-measured label, not range).
+- The prior user text dump independently confirmed live changing numeric notification output; screenshot now additionally proves actual plotted UI is visible and functioning. This does **not** prove specific human ID, through-wall targeting, true XY data, or that all displayed distance values match a physical tape measure.
+- **NEXT single visual milestone:** compile/upload separate `diagnostics/arduino/slot18_c4002_lcd_dashboard/slot18_c4002_lcd_dashboard.ino` together with 3 local Waveshare LVGL9 support files; look for large PRESENCE/MOTION distance + bars, status on actual built-in Waveshare 800×480 LCD. LVGL9 + ESP32_Display_Panel dependencies required; first LCD candidate **untested** until user supplies photo or compile error. Do not confuse PC screenshot with Waveshare dashboard success. Existing tested sketches untouched, no wiring changes.
+
+---
+
 # 2026-11-10 — LIVE PLOTTER USER-VERIFIED PASS; FIRST WAVESHARE LCD DASHBOARD CANDIDATE ADDED
 
 ## User-provided hardware output (proven)
