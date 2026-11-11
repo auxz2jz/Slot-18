@@ -1,3 +1,31 @@
+# 2026-11-10 — PHASE B COMPLETE: PRESENCE LOW -> MID RESTORED, BOTH GROUPS AT ORIGINAL MID (USER VERIFIED)
+
+- Latest user-uploaded Serial Monitor `Pasted text(20261111-024612).txt`, 244 lines cumulative; **new append lines 227–243**:
+```
+CURRENT PRESENCE: LOW (0)
+PROPOSED PRESENCE: LOW -> MID
+Type CONFIRM within 60s to change this ONE setting.
+Or CANCEL to leave everything unchanged.
+APPLYING PRESENCE LOW -> MID (single radar WRITE)...
+WRITE ACK: radar reported success.
+READBACK PRESENCE: MID (1)
+VERIFIED: intended setting is active.
+
+STATUS: current radar sensitivity groups:
+  Motion  = MID (group 1)
+  Presence= MID (group 1)
+  Link diagnostics: valid_frames=575 bad=0 notices=551 UART_errors=0 I2C_errors=0
+  Original hardware snapshot: MOTION MID, PRESENCE MID.
+  NO sensor settings changed by STATUS.
+```
+- **User-verified PASS:** presence setting restored via explicit `PLAN PRESENCE MID` and `CONFIRM`; vendor acknowledged write, separate readback returned MID, and subsequent independent STATUS confirmed both MOTION MID 1 and PRESENCE MID 1. No UART/I2C/packet errors in resulting cumulative active-control summary. Prior note that restoration was pending is **SUPERSEDED**.
+- **Full phase B status:** C4002 motion sensitivity MID -> LOW -> MID (both writes/readbacks verified); presence sensitivity MID -> LOW -> MID (both writes/readbacks verified). Interactive serial STATUS and initial 6/6 read-only settings audit user verified. Serial-monitor operator-confirmed candidate `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` is USER-VERIFIED for LOW/MID write and restore on both gates. HIGH/Custom and effectiveness in detecting different targets remain **untested**.
+- **Actual original configuration at last verification:** motion MID 1, presence MID 1. Earlier audit separately established 0–1100cm range, 15-second disappearance hold, 80cm resolution and firmware `CDJQ_A300_1.0.0_251028@JQ_1.0.0_251028`, but these latter fields were not re-read in latest session. Saved human-readable original baseline: `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`.
+- **Recommended next development**: leave hardware unchanged; implement a separate **operator-confirmed range/delay command sketch** with verified baseline read-before, single setting write, immediate readback and original restoration support, or begin actual Waveshare touchscreen hardware UI bring-up if user prefers. Vendor range/delay read commands are already proven, writes not yet. Manual environment calibration should be deferred until user can isolate the test area from clutter/cats, with an unoccupied sensing area and an explicit confirmation flow. Respect user's preference for small atomic tests and no power tangent.
+- Preserve user-verified continuous monitor, audit and sensitivity control sources; no unrelated changes.
+
+---
+
 # 2026-11-10 — USER-VERIFIED PRESENCE SENSITIVITY MID -> LOW WRITE + READBACK; RESTORATION PENDING
 
 - Latest user uploaded `Pasted text(20261111-024500).txt` (227 lines), which includes earlier previous sessions in same cumulative Serial Monitor. The **new append** lines 217–226 from active sensitivity control:
