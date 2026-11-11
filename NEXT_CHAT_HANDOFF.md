@@ -1,3 +1,38 @@
+# 2026-11-10 — RANGE CONTROL READ-ONLY BOOT AND MANUAL STATUS: USER-VERIFIED PASS
+
+User shared exact Serial Monitor output for the separate range-control firmware `diagnostics/arduino/slot18_c4002_range_control/slot18_c4002_range_control.ino`:
+```
+SLOT-18 C4002 RANGE CONTROL — CONFIRM REQUIRED
+No automatic C4002 writes. STATUS is read-only.
+Bridge OK; UART A 115200, 8N1.
+
+STATUS: current C4002 radar detection range:
+  Range min=0 cm (0.00 m), max=1100 cm (11.00 m)
+  Link diagnostics: valid=1 bad=0 notices=0 UART_errors=0 I2C_errors=0
+  Original verified range=0..1100 cm.
+  STATUS is READ ONLY; no settings changed.
+
+COMMANDS (Serial Monitor 115200, Newline):
+  STATUS
+  PLAN RANGE <min_cm> <max_cm>   e.g. PLAN RANGE 0 500
+  PLAN RANGE 0 1100             restore original after testing
+  CONFIRM                       apply one pending range write
+  CANCEL                        discard planned change
+  HELP
+PLAN never writes. CONFIRM expires 60s after PLAN.
+
+STATUS: current C4002 radar detection range:
+  Range min=0 cm (0.00 m), max=1100 cm (11.00 m)
+  Link diagnostics: valid=20 bad=0 notices=18 UART_errors=0 I2C_errors=0
+  Original verified range=0..1100 cm.
+  STATUS is READ ONLY; no settings changed.
+```
+- **Status PASS** for startup and manual serial `STATUS`, with both range READ requests returning 0..1100cm; zero invalid frames, zero UART or I2C errors. This user-tested candidate **compiles, uploads, and can read the sensor's range**. Do not claim its range WRITE/readback functionality has been tested yet; sensor stays original 0–1100cm.
+- **NEXT controlled test** using running sketch: send `PLAN RANGE 0 500`, ensure it reports `CURRENT RANGE: 0..1100 cm` and `PROPOSED RANGE: 0..1100 -> 0..500 cm`, then `CONFIRM` within 60s. Expect write ACK and `READBACK RANGE: 0..500 cm`, verify and share output. **After that**, restore original with `PLAN RANGE 0 1100` / `CONFIRM` and final `STATUS`, separately and only after successful range change confirmation. If any mismatch, `CANCEL` and do not write.
+- Independently verified sensitivity group motion MID 1/presence MID 1, disappearance delay 15s and gate resolution 80cm from previous tests. Preserve known-good sensitivity control, settings-audit and continuous monitor sketches; no other source changes. User prefers one experiment at a time. Power discussion deferred.
+
+---
+
 # 2026-11-10 — RANGE CONTROL CANDIDATE ADDED; ABS enclosure clearance guidance
 
 - User explicitly authorized next **adjustable detection range** development (not a hardware write) after both sensitivity groups restored to MID. Created **separate experimental read-before/confirmed-write/readback range control Arduino sketch**:
