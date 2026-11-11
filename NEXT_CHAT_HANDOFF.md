@@ -1,3 +1,9 @@
+# 2026-11-10 — User's handheld UI direction: Aliens-style scanner + IMU
+
+User says they want a visible **Aliens (1986)-inspired half-circle radar screen with sweeping lines, actual detection marks, plus a settings menu for ranges, calibration, and all existing sensor options**. Handheld movement/orientation should be sensed with an **IMU**, ideally 9DoF but BNO085 I2C has known ESP32-S3 compatibility caveat. Existing C4002 doesn't output XY; **LD2450 can return up to 3 moving targets' X/Y and speed**, which could provide real blips after a separate live sensor test. Never display fictional precise target positions as real. User has ADHD and prefers small visually demonstrable milestones. Full spec: `docs/SLOT18_HANDHELD_RADAR_UI_VISION.md`. **Immediate next test is still the already-prepared LCD dashboard on actual Waveshare hardware**; it is not user-verified. Preserve all working sketches and defer power discussion.
+
+---
+
 # 2026-11-10 — Live Arduino Serial Plotter GUI USER-VERIFIED with screenshot
 
 - User uploaded screenshot `Screenshot 2026-11-10 191918.png` of **Arduino IDE Serial Plotter on COM3** running the Slot-18 C4002 live plotter. User screenshot distinctly shows 4 visible plotted traces and checked legends: `Presence_m` (blue), `Motion_m` (orange), `Radar_state` (green), `Data_OK` (yellow); 115200 baud, RUN.
