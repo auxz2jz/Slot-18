@@ -1,3 +1,35 @@
+# 2026-11-10 — C4002 DISAPPEARANCE DELAY RESTORED TO 15s (FULL USER-VERIFIED PASS)
+
+- User pasted direct hardware Serial Monitor evidence for delay-control `diagnostics/arduino/slot18_c4002_delay_control/slot18_c4002_delay_control.ino`, proving the **full 15s -> 5s -> 15s** round trip via separate explicit `PLAN DELAY` and `CONFIRM` actions:
+```
+CURRENT DELAY: 5 seconds
+PROPOSED DELAY: 5 -> 15 seconds
+Type CONFIRM within 60 seconds for one setting change.
+Or CANCEL to leave delay unchanged.
+APPLYING DELAY 5 -> 15 seconds (one radar WRITE)...
+WRITE ACK: radar reported success.
+READBACK DELAY: 15 seconds
+VERIFIED: intended disappearance delay is active.
+Original delay: 15 seconds.
+
+STATUS: current C4002 target disappearance delay:
+  Disappearance delay=15 seconds
+  Link diagnostics: valid=163 bad=0 notices=152 UART_errors=0 I2C_errors=0
+  Original verified delay=15 seconds.
+  STATUS is READ ONLY; no settings changed.
+```
+- **Hardware-verified PASS:** target disappearance delay cmd 0x84 one-write success ACK/readback for 15->5 and 5->15; final separate STATUS confirms restored 15 seconds and zero corrupt frames, UART errors, I2C errors. Prior note `restoration pending` is **SUPERSEDED**.
+- Four major configurable controls now have complete change-and-restore tests, all back at verified original values:
+  - Motion sensitivity MID(1) -> LOW(0) -> MID(1)
+  - Presence sensitivity MID(1) -> LOW(0) -> MID(1)
+  - Detection range 0..1100 cm -> 0..500 cm -> 0..1100 cm
+  - Target disappearance delay 15 s -> 5 s -> 15 s
+- Other read-only audited baseline: 80 cm range gate resolution (code 0), original software version `CDJQ_A300_1.0.0_251028@JQ_1.0.0_251028`. No user-test for changing range resolution or custom individual distance gates. No environmental calibration performed.
+- **Important scope:** Verified configuration writes and independent reads, not controlled human detection, real-world sensor sensitivity curves, radial motion accuracy, detection range cutoff, true 5/15s timing, XY position or through-wall ability. Prior continuous monitoring had stable 17m run with no errors but no identified targets.
+- All five separate known-good sketches/experimental demos preserved in repo: continuous, read-only audit, sensitivity control, range control, and delay control. No coding change required to mark delay control verified. Next useful step: plan read-only resolution/status control or integrate current proven settings into physical 7-inch Waveshare GUI; choose one atomic task. Respect user request to defer power discussion.
+
+---
+
 # 2026-11-10 — USER-VERIFIED DELAY WRITE 15s -> 5s, RESTORATION PENDING
 
 The user pasted direct Serial Monitor evidence after initial delay STATUS on the new source `diagnostics/arduino/slot18_c4002_delay_control/slot18_c4002_delay_control.ino`:
