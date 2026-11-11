@@ -1,3 +1,11 @@
+# 2026-11-10 hardware-test continuation
+
+- Replacement DFRobot C4002 SEN0691 physically installed by user. RUN/OUT indicator activity reported, **not** validated serial data. New unit's full power and signal tests pending.
+- Diagnostic candidate added at `diagnostics/arduino/slot18_i2c_discovery/slot18_i2c_discovery.ino`, commit `106cadfda990bc63e0b3beb523e19eef43140807`. Scan `0x4D` bridge / `0x5D` touch first, then return to clock-marking verification and bounded UART response test. User test pending; no C4002 milestone closed.
+- Do not connect loose Waveshare red I2C VCC lead to the external 5V rail. Screen remains separately USB powered with shared GND/SDA/SCL. Verify rail polarity before power.
+
+---
+
 # 2026-10-27 real-hardware milestone update (CURRENT)
 
 Prior milestone forecasts below remain conceptual; the user has now **physically received** Waveshare Rev1.2 touchscreen, C4002 SEN0691, LD2450, two CJMCU-752 modules, breadboard/power supplies and oversized enclosure. See `NEXT_CHAT_HANDOFF.md` and `docs/2026-10-27_PHYSICAL_BENCH_CHECKPOINT.md` FIRST.
