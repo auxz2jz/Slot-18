@@ -1,3 +1,23 @@
+# 2026-11-10/11 — LCD live radar Serial log independently confirms FIRST stable integrated demo
+
+User supplied the COMPLETE startup log and ~44 periodic `LIVE:` records for the newly running v2 LCD firmware after selecting **Arduino ESP32 core 3.1.3**, **16MB flash**, **OPI PSRAM**, and uploading. Exact startup:
+```
+SLOT-18 / WAVESHARE LIVE RADAR LCD v2 (I2C compatibility)
+DISPLAY ONLY: no radar configuration writes.
+[I][Panel] ... Board initialize success
+[I][Expander] ... esp_io_expander_new_i2c_ch422g): version: 0.1.0
+[I][Panel] ... Board begin success
+LCD DASHBOARD READY; starting C4002 link...
+RADAR BRIDGE READY, UART A 115200.
+```
+Then continuous, increasing, *valid* count from 7 to **257**, **bad=0**, **I2C_errors=0** throughout; presence from 0.68m to 3.16m and motion from 0 to 2.51m in supplied excerpt, state codes 1=Presence, 2=Motion per source code. **No abort, reboot, fatal errors** in complete provided serial snippet. Together with user's two photos confirming `LINK: LIVE` and changing values, first end-to-end on-device C4002 -> CJMCU-752 -> ESP32-S3 -> LVGL on Waveshare 800x480 display is NOW VERIFIED. Onboard LCD graphics rendering, sensor reading, and link stable during sampled period; touchscreen intentionally disabled. Do not change known-good configuration or old standalone test sketches.
+
+**Visual observation for future development:** small glowing circles appear near left of both bars even while ranges show ~1-3m; source has `lv_obj_set_pos(bar,14,195)`, range 0..1100 cm, bar width310, update `centiP` / `centiM`; must separately verify bar behavior, orientation, and dynamic rendering. Distances fluctuate and presence sometimes hits 0.68m frequently; assess environmental calibration and field testing later; don't equate valid frames with measurement accuracy.
+
+**NEXT** once user desires: verify whether colored bars change lengths when changing distances; then preserve current v2 baseline / tag as verified, design a separate copy for more sophisticated Aliens-inspired radar screen (semicircular sweep and distance-based visualization while C4002 has no direction). Could incrementally enable GT911 touchscreen later after considering shared I2C bus. User prefers tiny, high-signal steps, not broad diagnostic checklists. User currently simply pasted Serial log for validation; response should confirm, not ask for more logs.
+
+---
+
 # 2026-11-10/11 — FIRST USER-VERIFIED LIVE 7-INCH LCD RADAR DASHBOARD (MAJOR MILESTONE)
 
 User installed Arduino ESP32 board package **3.1.3** to resolve `i2c: CONFLICT! driver_ng ... old driver`, set **ESP32S3 Dev Module**, **16MB flash**, **OPI PSRAM (8MB)**, verified and uploaded the v2 sketch `diagnostics/arduino/slot18_c4002_lcd_dashboard/slot18_c4002_lcd_dashboard.ino` (GitHub commit `6249e0869c800a0b05203d267ea0bf9a7ad9f3fb`). **The Waveshare ESP32-S3 Touch LCD 7 SCREEN NOW LIGHTS AND DISPLAYS LIVE RADAR DATA**. User supplied two clear photos of screen. This is first confirmed hardware success, not just compilation/PC serial plot.
