@@ -1,3 +1,27 @@
+# 2026-11-10 — Continuous C4002 physical test: sustained data PASS; intermittent CJMCU I2C outage UNKNOWN CAUSE
+
+**Source:** user-uploaded `Pasted text(20261111-012731).txt` (319 lines), user's own live Serial Monitor evidence; no user-stated circumstances of power removal/unplugging. Separate previous bounded 25s logs appear at file start; interpret **TWO** independent continuous monitor startup banners, not one uninterrupted run.
+
+**Continuous monitor (new sketch, first run):**
+- Boot at line ~90, CJMCU ACK and valid sensor frames through ~t=15s. Then repeated `I2C ERROR: unable to read CJMCU-752 line status`.
+- Later `I2C LINK RESTORED` occurred but valid notifications did NOT resume in the captured section; `NO NEW DATA for 5 seconds` printed.
+- 209s summary: `rx=513 valid=16 bad=0 detection=16 overrun=1 parity=0 framing=1 breaks=0 I2C_errors=3870 last_detection_age=193s`.
+- Cause unknown. A deliberate breadboard power off, shaky external 5V/GND, intermittent SDA/SCL, or software/electrical instability are possibilities; **do not conclude bridge hardware defective** without asking user what was happening when failures occurred. Count repeated error print lines is not same as internal I2C attempt count.
+
+**Continuous monitor (second fresh startup at file line ~158):**
+- Starts with `NO_TARGET` t=2–11s, then valid `MOTION` and `PRESENCE` with plausible changing speed/distance, including AWAY and APPROACHING. `NO_TARGET` valid packet implies radar itself reported no target; distinguish from absent data.
+- Summaries:
+  - 31s: `rx=1216 valid=38 bad=0 detection=38 overrun=0 parity=0 framing=0 breaks=0 I2C_errors=0`.
+  - 61s: `rx=2272 valid=71 bad=0 detection=71 overrun=0 parity=0 framing=0 breaks=0 I2C_errors=0`.
+  - 91s: `rx=3232 valid=101 bad=0 detection=101 overrun=0 parity=0 framing=0 breaks=0 I2C_errors=0`.
+  - 121s: `rx=4288 valid=134 bad=0 detection=134 overrun=0 parity=0 framing=0 breaks=0 I2C_errors=0`.
+- Valid live readings through ~t=135s; file ends with a single `I2C ERROR` afterward, without later context.
+- **CANDIDATE now user-run physical test PASS for indefinite loop past 120s and actual observed NO_TARGET + PRESENCE/MOTION packets**; baseline 25s remains preserved. **Not yet verified indefinitely stable or range-accurate**; unexplained I2C outages remain open. Ranges and motion values are radar-reported not calibrated, and stale motion distances occur when energy=0 / status PRESENCE.
+- **Next atomic test**: Ask user whether they intentionally disconnected or switched off CJMCU + radar breadboard supply at ~15s during first continuous run and ~135s in second, or physically disturbed wiring. If intentional, record expected disconnect behavior, avoid code changes. If unintentional, user should power OFF and inspect/verify supply rails, GND, I2C SDA/SCL seating/polarity, then perform 2–5 min stationary no-touch power-on test, recording failures; diagnose first failure without reflashing. Screen's red I2C VCC remains disconnected and insulated. No touch UI testing yet.
+- **No source modification this turn**, only diagnostic evidence; current continuous sketch path `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino`, source commit `af2e3af25f20d0fa45afe71a04f28b15432188c8`.
+
+---
+
 # 2026-11-10 — Continuous C4002 monitor candidate ready (S18-DIAG-20261110-CONTINUOUS-01)
 
 - **User request:** replace 25-second bounded live diagnostic with **continuous Serial Monitor observation**, using same verified 1.8432MHz/115200-8N1 CJMCU-752 bridge and C4002 replacement radar wiring. User previously confirmed radar stationary while they moved hand up/down and toward/away. No physical movement/range calibration yet.
