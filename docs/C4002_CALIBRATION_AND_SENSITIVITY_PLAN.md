@@ -2,7 +2,7 @@
 
 Date: 2026-11-10
 Task: S18-C4002-CTRL-20261110-01
-Status: **PHASE A READ-ONLY AUDIT CANDIDATE CREATED** — `diagnostics/arduino/slot18_c4002_settings_audit/slot18_c4002_settings_audit.ino` (commit `5fb1cfb371197354672731199ad7db2c28c12366`) reads current settings without applying calibration or changing radar configuration. It has NOT been compiled, uploaded, or tested by the user. Existing user-verified `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino` remains unchanged.
+Status: **PHASE A USER-VERIFIED PASS (6/6 configuration reads, zero errors)** — original settings captured in `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`. **PHASE B CANDIDATE** `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` (commit `2544503484f8c8f7e8d150561d3e004b5d9e4617`) adds operator-confirmed single-sensitivity-preset adjustment and readback, but has **not been compiled or hardware-tested**. Existing user-verified `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino` and independently verified `diagnostics/arduino/slot18_c4002_settings_audit/slot18_c4002_settings_audit.ino` remain unchanged.
 
 ## Why
 
@@ -48,3 +48,11 @@ Manufacturer references:
 **Next user test, when convenient:** Verify/upload the separate read-only audit sketch. It sends six one-shot manufacturer READ requests via the existing SC16IS752 UART-A adapter: software version (0x82), motion and presence threshold group (two 0x87 reads with gate types 0/1), detection range (0x86), disappearance delay (0x84), and range resolution (0x66). Each has a bounded 2.5s response wait and validates checksum, frame length, type, response code and sensitivity gate before displaying values. The sketch does not persist a snapshot; capture the entire Serial Monitor output for baseline. Check that each query returns a successful response before implementing writes. After testing, the original continuous monitor can be reuploaded. The DFRobot native UART Arduino library cannot directly communicate through SC16IS752 I2C; the diagnostic uses the proven manual bridge adapter. Do not auto-calibrate or send sensor-setting writes until original values are read and verified.
 
 Recommended coding setting: Medium effort for individual UART bridge read-only commands, escalate High only if protocol replies/bridge I2C prove unexpectedly complex.
+
+## 2026-11-10 progress: Phase A verified; Phase B optional candidate
+
+The user ran the six-query audit and obtained 6/6 successful replies with zero timeouts, UART errors, I2C errors or invalid frames. Actual values are saved in `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`: both sensitivity groups MID, range 0–1100cm, hold time 15s, resolution 80cm, firmware `CDJQ_A300_1.0.0_251028@JQ_1.0.0_251028`.
+
+Next experimental sketch: `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` is **candidate only** and needs Arduino IDE compile + physical UART testing before any claims. On boot it reads both sensitivity presets, no C4002 writes. `STATUS` is repeatable read-only; `PLAN MOTION LOW|MID|HIGH` or `PLAN PRESENCE LOW|MID|HIGH` arms a proposed change for up to 60s. `CONFIRM` must be typed separately to write a single group, then fetches immediate sensor readback. `CANCEL` aborts. There is no automatic rollback or guarantee that values reset on power loss. User can explicitly restore original MID individually. Range/hold-time/environmental calibration writes remain unavailable in this candidate.
+
+First test should be **read-only**: compile, flash on same board, open UART USB-C CH343 Serial Monitor at 115200, view startup status and send `STATUS` using Newline; verify both current groups MID, zero I2C errors. If that fails, do not attempt `PLAN` or `CONFIRM`. No wiring or power changes needed.
