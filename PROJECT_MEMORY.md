@@ -1,3 +1,19 @@
+# 2026-11-10 — Delay control startup/manual STATUS USER-VERIFIED PASS; no write yet
+
+User provided live output from `diagnostics/arduino/slot18_c4002_delay_control/slot18_c4002_delay_control.ino`:
+```
+STATUS: current C4002 target disappearance delay:
+  Disappearance delay=15 seconds
+  Link diagnostics: valid=14 bad=0 notices=12 UART_errors=0 I2C_errors=0
+  Original verified delay=15 seconds.
+  STATUS is READ ONLY; no settings changed.
+```
+- **USER-VERIFIED**: C4002 disappearance-delay read via vendor cmd0x84, serial command processing, 14 checksum-valid frames (12 notifications), zero bad frames/UART or I2C errors. The pilot compiles and runs on Waveshare ESP32-S3 via CJMCU bridge; read-only operation passed. The 15-second original setting is unchanged. **Write/readback untested yet**.
+- **Next single controlled action:** user sends `PLAN DELAY 5`, verifies `CURRENT DELAY: 15 seconds` and `PROPOSED DELAY: 15 -> 5 seconds`, then sends `CONFIRM` within 60 seconds and shares resulting write ACK and `READBACK DELAY`. If any mismatch, cancel and do not write. If successful, return to original later via `PLAN DELAY 15`/`CONFIRM`, followed by `STATUS`. Never claim restoration before seeing output.
+- Other last verified settings remain Motion MID1, Presence MID1, range0..1100cm; 80cm gate resolution from earlier audit, with no further changes. No source changes necessary. Preserve known-good continuous, audit, sensitivity and range control sketches. User prefers one atomic test and has deferred power discussion.
+
+---
+
 # 2026-11-10 — Separate C4002 disappearance-delay control CANDIDATE saved (untested)
 
 - After the **user-verified** full range 0–1100cm -> 0–500cm -> 0–1100cm round-trip, added a separate read-first/guarded-one-write/readback candidate:
