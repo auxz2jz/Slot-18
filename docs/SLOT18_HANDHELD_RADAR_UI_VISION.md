@@ -33,3 +33,22 @@ User wants a **handheld radar/motion tracker**, styled after the recognizable 19
 - DFRobot C4002: https://wiki.dfrobot.com/sen0691/
 - HLK-LD2450 instruction manual: https://manuals.plus/m/374d7b6608cbce20e803b3aa4f405637826960c1ed42a858dedfaa97a3253478
 - Adafruit BNO085 caveat: https://learn.adafruit.com/adafruit-9-dof-orientation-imu-fusion-breakout-bno085
+
+## Dual-radar simultaneous operation and fusion — design clarification (2026-11-10)
+
+User clarified that C4002 and LD2450 **must both operate concurrently and be represented in ONE scanner interface**, rather than switching between channels or completely independent screens.
+
+- **Far range:** C4002 is a combined motion + micro-motion/stationary presence **distance/state** sensor. Per DFRobot specification moving detection up to **11m**, stationary/micro-motion presence up to **10m**, 120°×120° FoV. It reports radial toward/away motion and distance, but **NOT left/right bearing or X/Y**. The long-range visual should draw a **distance arc/ring/sector or range tick with explicitly UNKNOWN bearing**, not a fake directional blip or a line pointing to an invented location.
+- **Near range:** Hi-Link LD2450 can report relative **X/Y position and speed of up to 3 moving targets within ~6m** and ±60° horizontal, nominal ~10Hz. On a scanner, plot **true short-range directional blips** from LD2450, distinct from the long-range C4002 range band. LD2450 does not reliably identify stationary targets, and both radar sources have environmental false positives.
+- **Overlap 0–6m:** show both sensors running continuously, C4002 presence/distance + LD2450 directional tracking. A **possible common-target match** requires spatial alignment, timestamps and distance agreement (LD2450 radial distance=sqrt(x²+y²)), handling multiple targets and unmatched observations. Agreement increases confidence, **does not automatically improve measurement precision** or establish same object; may also cross-check against clutter-induced false positives.
+- **Critical co-location validation:** both radios operate in the **24–24.25GHz band** and may mutually interfere. Vendor LD2450 installation cautions against direct beam confrontation / multiple same-band radar interference. Before promising simultaneous fusion, test each independently, then both on while fixed/offset in final enclosure with realistic target motions, inspect false positives/jitter and RF placement. No sensor is guaranteed to work concurrently at rated range. Do not say the device is already dual-live implemented: at this point only the C4002 live interface and its four config controls were user hardware-tested; LD2450 appeared in older simulator but not yet wired/tested with current bridge/display integration.
+- **Handheld compensation:** use IMU pitch/roll/yaw to understand **device orientation**, allow user to zero heading, distinguish user turns from moving targets where possible; a 9DoF IMU alone cannot recover reliable 2D position in a room. Manual scanning while the device translates can create radar detections, so classify stationary sensor/platform motion separately and don't present absolute XY positions.
+- **Settings resolution tradeoff:** DFRobot example documents C4002 distance-gate **80cm** mode across approx 11.6m, whereas **20cm** mode provides approximately 4.9m of gated range; **do not enable 20cm and promise 11m coverage at same time** without separately verifying behavior and mode-specific range.
+
+## Illustrative unified screen states
+
+- **8m motion/presence from C4002:** long-distance arc/range tick at ~8m, **bearing unknown**. LD2450 may show no blip because target lies beyond its 6m operating envelope.
+- **4m moving target observed by LD2450:** true relative X/Y dot at ~4m; if C4002 detects similar 4m return at same time, label as a tentative match/stronger corroboration, not a confirmed identified object.
+- **Person stops within 4m:** LD2450 moving-target track may vanish; C4002 can continue to report stationary micro-motion/presence in vicinity, but without left/right localization. Don't freeze an old LD2450 blip as known position without marking stale.
+
+References: https://wiki.dfrobot.com/sen0691/ ; https://www.dfrobot.com/product-3081.html ; https://manuals.plus/m/374d7b6608cbce20e803b3aa4f405637826960c1ed42a858dedfaa97a3253478 ; https://wiki.dfrobot.com/sen0691/docs/23398 .
