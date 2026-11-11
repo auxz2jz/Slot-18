@@ -1,3 +1,25 @@
+# 2026-11-10 — USER VERIFIED: C4002 settings audit PASS, baseline saved; phase B candidate created
+
+**Actual user-uploaded Serial Monitor log:** `Pasted text(20261111-022934).txt` (157 lines). The first ~103 lines are output from previous CONTINUOUS sketch (t=24..119 s); a visible new ESP-ROM boot separator follows, then the NEW read-only settings audit banner. User previously had plugged the native ESP32-S3 USB port, yielding COM5 and blank UART Serial Monitor; switched to correct Waveshare **UART USB-C CH343** and output returned. No firmware or board wiring fault implied.
+
+**Phase A — READ-ONLY settings audit USER-VERIFIED PASS on physical bench**:
+- Firmware version (0x82, 40 bytes) `CDJQ_A300_1.0.0_251028@JQ_1.0.0_251028`
+- Motion sensitivity (0x87 gate0): MID (1), raw `00 01`
+- Presence sensitivity (0x87 gate1): MID (1), raw `01 01`
+- Range (0x86): min 0cm max 1100cm (0 to 11.0 meters), raw `00 00 4C 04`
+- Disappearance delay (0x84): 15s, raw `0F 00`
+- Resolution (0x66): 0 = 80cm, raw `00`.
+- Summary exactly `AUDIT COMPLETE: good_settings=6 failed_settings=0 timeouts=0 valid_frames=7 checksum_or_length_errors=0 notifications=1 rx_bytes=167 UART_error_flags=0 I2C_errors=0`.
+- No C4002 settings changed. Baseline **saved** at `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`, commit `775612e0044e4f34c0422f1de31ffe9907305c8b`. This is a text snapshot of read configuration only, not a full sensor NVM or firmware image.
+
+**Phase B — new separate operator-confirmed SENSITIVITY control CANDIDATE**, not tested/compiled: `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino`, commit `2544503484f8c8f7e8d150561d3e004b5d9e4617`. It has no automatic C4002 writes: startup queries current MOTION/PRESENCE, commands `STATUS`, `PLAN MOTION LOW|MID|HIGH`, `PLAN PRESENCE LOW|MID|HIGH`, `CONFIRM`, `CANCEL`, `HELP`; PLAN reads current and asks for CONFIRM (expires 60s), CONFIRM rereads/guards initial value, writes ONE selected preset (DFRobot write frame type 0x00 / command 0x87), then separately reads it back (read frame type 0x01 / response 0x03). A write may persist after reboot; no silent factory-reset/auto-calibration/threshold writes; manual MID restoration per channel via PLAN/CONFIRM. Candidate is structurally checked only, **NOT user-run/compiled/verified**, so protect original continuous and read-only audit sketches.
+
+**Recommended single next guided test:** flash new candidate while wiring/USB CH343 unchanged, Serial Monitor 115200, verify initial read-only STATUS shows both MID; send `STATUS` in Serial Monitor using Newline; DO NOT command `PLAN`/`CONFIRM` until basic reads behave as expected and user is ready to test changing one setting. If no serial output check Waveshare UART USB-C CH343 port rather than USB; press RESET after opening Serial Monitor. Report compilation/serial output verbatim. As always user controls power before rewiring. No further sensor config change without deliberate physical user action.
+
+**No changes to working known-good** 17-min `slot18_c4002_continuous.ino` (zero errors) or user-proven `slot18_c4002_settings_audit.ino`. User was off-axis in other room during 17min run; metal racks, microwave/TV/DVR, aluminum-faced paneling and cats contribute reflections/detections; do not call reported presence verified detection of the user.
+
+---
+
 # 2026-11-10 — Phase A C4002 read-only configuration audit candidate CREATED
 
 - User said **Continue** after approving future calibration/sensitivity features. Implemented next atomic safe stage: `diagnostics/arduino/slot18_c4002_settings_audit/slot18_c4002_settings_audit.ino`, GitHub commit `5fb1cfb371197354672731199ad7db2c28c12366`. User-verified continuous radar monitor `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino` remains untouched (previously 17m8s live continuous, last cumulative 1084 good/0 errors).
