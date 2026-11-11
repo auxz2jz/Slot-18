@@ -1,3 +1,25 @@
+# 2026-11-10 — PHASE B FIRST SENSOR WRITE VERIFIED: MOTION MID -> LOW (restoration pending)
+
+- User uploaded Arduino Serial Monitor log `Pasted text(20261111-024217).txt`, 200 lines, showing after successful sensitivity control startup and manual STATUS:
+```
+CURRENT MOTION: MID (1)
+PROPOSED MOTION: MID -> LOW
+Type CONFIRM within 60s to change this ONE setting.
+Or CANCEL to leave everything unchanged.
+APPLYING MOTION MID -> LOW (single radar WRITE)...
+WRITE ACK: radar reported success.
+READBACK MOTION: LOW (0)
+VERIFIED: intended setting is active.
+Original hardware baseline is MID for each group.
+To restore, PLAN this group MID, then CONFIRM separately.
+```
+- **User-verified hardware functionality** of read-before, `PLAN`, operator `CONFIRM`, DFRobot 0x87 write response and separate checksum-valid readback on the replacement SEN0691 via CJMCU-752 UART A bridge. Motion LOW group 0 **is the last verified actual value** at end of uploaded log; **DO NOT CLAIM IT HAS BEEN RESTORED YET**.
+- Presence was MID at last read-only STATUS, and no presence-setting write is logged. Original baseline includes **MOTION MID 1 / PRESENCE MID 1**, 0–1100cm range, 15-second disappearance delay, 80cm resolution, firmware `CDJQ_A300_1.0.0_251028@JQ_1.0.0_251028`; original values saved in `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`.
+- **NEXT: restore immediately** using Serial Monitor newline with `PLAN MOTION MID`, verify it reports `LOW -> MID`, then send `CONFIRM` within 60 seconds. Send `STATUS` and share output, check Motion MID and Presence MID before proceeding. If write or readback warns/fails, don't assume restoration; inspect log and retry only deliberately.
+- All three diagnostic sketches still preserved in repo. No source change needed for successful control command. Hardware range and actual detection sensitivity performance not yet calibrated/validated; the write acceptance only validates configuration control. Keep deferred power topic deferred.
+
+---
+
 # 2026-11-10 — Phase B sensitivity control boots, queries both groups: USER-VERIFIED READ-ONLY STARTUP PASS
 
 - User uploaded Serial Monitor paste `Pasted text(20261111-023743).txt`, 183 lines. First t=24..119s prior continuous program, then an ESP-ROM reboot and previous standalone settings-audit 6/6 PASS, then **a second reboot** followed by latest `SLOT-18 C4002 SENSITIVITY CONTROL — CONFIRM REQUIRED` candidate. Interpret only the lines after that second boot as the new control test, not the earlier session lines.
