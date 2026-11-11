@@ -1,3 +1,15 @@
+# 2026-11-10 — Separate C4002 disappearance-delay control CANDIDATE saved (untested)
+
+- After the **user-verified** full range 0–1100cm -> 0–500cm -> 0–1100cm round-trip, added a separate read-first/guarded-one-write/readback candidate:
+  `diagnostics/arduino/slot18_c4002_delay_control/slot18_c4002_delay_control.ino` at commit `bf4118c35341f6ce15b6673a6eb1c647ae46d84f`.
+- Vendor library `DFRobot/DFRobot_C4002` checked: `setTargetDisappearDelay(uint16_t)` uses cmd **0x84**, write frame request0x00, dataLen **6** with 2-byte little-endian seconds; `getTargetDisappearDelay()` read request0x01 dataLen **4** and returned two-byte seconds. Documented manufacturer valid field 0..65535s, experimental control intentionally accepts only 0..60s to avoid accidental long holds. Original user-read 15s.
+- Separate sketch reuses proven Waveshare ESP32-S3 GPIO8/GPIO9, SC16IS752 bridge I2C0x4D, UART A 115200, CH343 USB UART. Startup/`STATUS` READ ONLY. Commands `STATUS`, `PLAN DELAY 5`, `PLAN DELAY 15` for restoration, `CONFIRM` (60s expiry, rereads and checks before single write, readback after), `CANCEL`, `HELP`. Does not touch range, sensitivities, resolution, environment calibration or firmware baud.
+- Source was structurally reviewed (balanced braces, expected manufacturer request frame fields) but **not Arduino compiled, uploaded or hardware tested yet**. Do not claim delay reads/writes verified for this new control. All four previously user-tested source files remain preserved in separate locations.
+- **NEXT ATOMIC USER ACTION:** open new `slot18_c4002_delay_control.ino` in Arduino IDE, compile/upload using original Waveshare CH343 UART USB-C and wiring, open Serial Monitor at **115200 / Newline**, send `STATUS`. Expect `Disappearance delay=15 seconds` and zero I2C/UART/bad frames. Do **not** ask user to write `PLAN DELAY 5` / `CONFIRM` until initial read-only test user-verified. Then after single confirmed 5-second change and verified readback, separate restore with `PLAN DELAY 15` / `CONFIRM`, final STATUS.
+- Range sensor currently last-verified baseline 0..1100cm; motion MID1, presence MID1. Performance/calibration not tested; hold setpoint modification does not prove physical clearance timing until a separate field test.
+
+---
+
 # 2026-11-10 — C4002 RANGE CONTROL COMPLETE, ORIGINAL 0–1100cm RANGE RESTORED
 
 User pasted direct ESP32-S3 Arduino Serial Monitor evidence (after previous successful `PLAN RANGE 0 500` / `CONFIRM`) showing restored range:
