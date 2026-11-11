@@ -159,7 +159,8 @@ void setup() {
   }
   Serial.println("Stage A: passive RX sample 1200 ms");
   readSerialFor(1200);
-  Serial.printf("Passive bytes: %u\n",(unsigned)used);
+  Serial.println("PASSIVE RX RESULTS (before sending command):");
+  dumpCapture();
   // Keep passive sample separate from commanded reply to make results interpretable.
   used=0; overruns=0; parityErrors=0; framingErrors=0; breaks=0;
   // DFRobot software-version query: header, length=15, seq=0, read req=1,
