@@ -1,3 +1,12 @@
+# 2026-11-10 — Critical new context for 17m C4002 presence report
+
+- User clarified that for much of the prior extended 17min continuous run, **they were ~20 feet away washing dishes in a different room** from the stationary C4002. Therefore repeated `PRESENCE` during that window **MUST NOT be described as successful stationary detection of the user** or as verified true-positive occupancy. The radar may have sensed some other movement/presence, an environmental source, reflections, or possibly detected through a barrier; all remain **unproven**. The sensor logs often reported presence distances nearer ~1.5–3m and motion distance values remained stale when motion energy=0; these measurements are NOT reliable identity/location evidence.
+- User requested **set aside power distribution issue for now**; do not repeat USB-C wiring tangent unless they return to it.
+- C4002 17min UART reliability PASS unaffected, with zero errors and sustained valid frames. **Target discrimination/false-positive rejection remains open**. DFRobot C4002 supports environmental calibration and distance-gate thresholds per vendor library, but do **not** send configuration/calibration commands or assume they solve it before controlled vacant-room test and measurement. Simple next test: radar aiming at empty room while user elsewhere and no one in the area, logging state for a few minutes; note walls/doors/appliances/HVAC/fans and orientation.
+- Source: clarification directly from user in chat after successful test; source repo prior log from Pasted text(20261111-015916).txt.
+
+---
+
 # 2026-11-10 — User-verified continuous C4002 reliability extended run PASS (17m08s)
 
 **Evidence:** user-uploaded serial monitor log `Pasted text(20261111-015916).txt`, 1,134 lines; log contains one active `Slot-18 C4002 CONTINUOUS LIVE MONITOR (READ-ONLY)` session, serial timestamps t=2 through t=1028s (**17m08s**). Sketch: `diagnostics/arduino/slot18_c4002_continuous/slot18_c4002_continuous.ino`, commit `af2e3af25f20d0fa45afe71a04f28b15432188c8`.
