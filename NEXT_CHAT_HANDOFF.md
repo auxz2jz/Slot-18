@@ -1,3 +1,15 @@
+# Slot-18 — 2026-11-10 user serial log: ESP32 boot loop, I2C test BLOCKED
+
+- User uploaded Arduino Serial Monitor capture (20,783 lines), not committed because bulk noisy logs stay attached to chat.
+- Boot continuously reports: `partition 4 invalid - offset 0x610000 size 0x9e0000 exceeds flash chip size 0x800000`, then `Failed to verify partition table` and `load partition table error!`. Approx. 1,598 repeats of the reset banner and 1,597–1,598 repeats of each error. **No `Slot-18 I2C Bridge Discovery` output; diagnostic NEVER REACHED setup.**
+- Prior direct esptool interrogation reported physical flash 16MB, N16R8; current bootloader is enforcing 8MB (`0x800000`) while partition table spans nearly 16MB. Suspect incorrect Arduino Flash Size setting or bootloader image configuration (8MB vs actual 16MB), NOT proven component failure.
+- **Next atomic action:** In Arduino IDE Tools, confirm board profile, `Flash Size = 16MB (128Mb)` and a matching 16MB partition scheme, plus OPI PSRAM as previously verified. Re-upload existing read-only I2C scanner (do NOT rewrite code, do NOT erase all flash); capture fresh serial output. If menu does not expose these values, inspect selected board profile rather than guessing. Do not cycle same failed build.
+- Screen blank is expected for scanner, but serial should show its own banner when boot works. Do not test C4002 until scanner boots, then verify `0x4D` bridge and `0x5D` touch.
+- Previously saved original full 16MB factory image remains private on Windows and restore untested. Preserve it.
+- No replacement-radar results established by this failed boot.
+
+---
+
 # NEXT CHAT HANDOFF — Slot-18 — 2026-11-10 (NEW SENSOR / TEST PENDING)
 
 **Read this note first, then the detailed 2026-10-27 checkpoint below.** User has replaced the DFRobot C4002 SEN0691 radar with another C4002 of the same model. User reports RUN and OUT indicator activity on the replacement. This is NOT a verified UART handshake, detection, or power-voltage measurement on the replacement. Waveshare screen and CJMCU-752 bridge are unchanged. Screen's loose **red I2C VCC lead must remain DISCONNECTED and insulated** while screen is powered via its USB-C; share ground/SDA/SCL only. Recheck actual breadboard rail polarity with meter before powering the replacement (old reversed-rail incident). No new user-verified C4002 serial success.
