@@ -1,3 +1,27 @@
+# 2026-11-10 — USER-VERIFIED PRESENCE SENSITIVITY MID -> LOW WRITE + READBACK; RESTORATION PENDING
+
+- Latest user uploaded `Pasted text(20261111-024500).txt` (227 lines), which includes earlier previous sessions in same cumulative Serial Monitor. The **new append** lines 217–226 from active sensitivity control:
+```
+CURRENT PRESENCE: MID (1)
+PROPOSED PRESENCE: MID -> LOW
+Type CONFIRM within 60s to change this ONE setting.
+Or CANCEL to leave everything unchanged.
+APPLYING PRESENCE MID -> LOW (single radar WRITE)...
+WRITE ACK: radar reported success.
+READBACK PRESENCE: LOW (0)
+VERIFIED: intended setting is active.
+Original hardware baseline is MID for each group.
+To restore, PLAN this group MID, then CONFIRM separately.
+```
+- **Result: USER-VERIFIED** bidirectional presence threshold group 0x87 write ACK and readback; presence **LOW group 0 is currently last verified**. Motion **MID 1** was last independently verified following prior LOW->MID restoration. Do NOT claim presence is restored to MID yet.
+- Active source: `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino`; no source changes needed.
+- **IMMEDIATE NEXT USER TEST:** With Serial Monitor 115200 and Newline, send `PLAN PRESENCE MID`. Verify it says `CURRENT PRESENCE: LOW (0)` and `PROPOSED PRESENCE: LOW -> MID`. Send `CONFIRM` within 60s, then `STATUS`. Capture output proving presence MID (1) and motion MID (1), independent readback, no errors. Any unexpected response: do not assume restoration; troubleshoot before continuing.
+- This proves *programmatic config preset control* for motion and presence, not behavior/effective detection sensitivity, physical calibration, or person identification. Range remains 0–1100cm, hold 15s, resolution 80cm as baseline prior (not newly reaudited).
+- Current user-tested motion toggle: MID -> LOW -> MID success. Current user-tested presence toggle: MID -> LOW success; return to MID pending.
+- Original baseline backup: `docs/C4002_VERIFIED_CONFIGURATION_2026-11-10.md`. Existing read-only audit and continuous monitor untouched. Power topic still deferred.
+
+---
+
 # 2026-11-10 — USER-VERIFIED C4002 MOTION SENSITIVITY RESTORATION COMPLETE
 
 - User uploaded Serial Monitor `Pasted text(20261111-024332).txt` (217 lines). Latest appended lines 200–216 show `PLAN MOTION MID` initiated with `CURRENT MOTION: LOW (0)`, `PROPOSED MOTION: LOW -> MID`, then separately `CONFIRM` accepted and `WRITE ACK: radar reported success`, `READBACK MOTION: MID (1)`, `VERIFIED: intended setting is active.`
