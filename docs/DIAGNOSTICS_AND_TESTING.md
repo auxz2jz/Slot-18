@@ -72,3 +72,12 @@ Persist diagnostic sessions, correlation IDs, crash/watchdog evidence, per-featu
 - **Guided check 4 (accuracy, later):** Compare radar's distance at physically measured positions (e.g., 1,2,3m); keep presence distance separate from motion distance.
 - **Stop:** Close Serial Monitor to stop local display; firmware still runs while powered. Remove power or upload a different sketch to stop firmware. No display or touch tests implied.
 - **Evidence:** Save a concise log slice including startup, several detections, two SUMMARY reports, and absence outcome. Label user-verified only after physical test.
+
+## Phase A read-only C4002 settings audit — S18-C4002-AUDIT-20261110-01
+
+- Source: `diagnostics/arduino/slot18_c4002_settings_audit/slot18_c4002_settings_audit.ino`, commit `5fb1cfb371197354672731199ad7db2c28c12366`. **Candidate only, not compiled or hardware tested.** Existing user-verified continuous monitor remains unchanged.
+- Hardware preconditions: same successful Waveshare ESP32-S3 Touch LCD 7 + CJMCU-752 0x4D + C4002 radar wiring; red Waveshare I2C 5V wire disconnected/insulated; don't rewire powered components.
+- Run: open raw audit source, replace entire Arduino editor, select known-good 16 MB board/partition/PSRAM/COM3, Verify then Upload. Serial Monitor 115200; press RESET once if necessary. This runs once per reset then stops.
+- Expected: boot `SLOT-18 C4002 READ-ONLY SETTINGS AUDIT`, `Bridge ACK`; six ordered `QUERY x/6` blocks (version, motion, presence, detection range, disappearance delay, resolution), then `AUDIT COMPLETE`. Responses should have sensor status=1 and nonzero appropriate payload; checksum and matching cmd/gate verified before PASS. Partial/timeouts are **not** PASS. Zero UART/I2C error flags in stationary powered condition; record actual exceptions rather than assuming failures of hardware.
+- Evidence: paste all six query blocks (including raw payload), summary counts, and test circumstances. Do not claim values are user-verified before log. Read requests do not change radar settings; script has no automatic retry, no sensor calibration or factory reset.
+- On success, capture full output as baseline configuration before any future sensitivity write. To return to real-time observations re-upload separate user-verified continuous sketch.
