@@ -1,3 +1,26 @@
+# 2026-11-10 — USER-VERIFIED DELAY WRITE 15s -> 5s, RESTORATION PENDING
+
+The user pasted direct Serial Monitor evidence after initial delay STATUS on the new source `diagnostics/arduino/slot18_c4002_delay_control/slot18_c4002_delay_control.ino`:
+```
+CURRENT DELAY: 15 seconds
+PROPOSED DELAY: 15 -> 5 seconds
+Type CONFIRM within 60 seconds for one setting change.
+Or CANCEL to leave delay unchanged.
+APPLYING DELAY 15 -> 5 seconds (one radar WRITE)...
+WRITE ACK: radar reported success.
+READBACK DELAY: 5 seconds
+VERIFIED: intended disappearance delay is active.
+Original delay: 15 seconds.
+Restore with PLAN DELAY 15, then CONFIRM.
+```
+- **USER-VERIFIED PASS** for operator-confirmed C4002 delay write 0x84 (15->5 sec), sensor success ACK and independent checksum-valid readback. **LAST VERIFIED CURRENT DELAY IS 5 SECONDS**, NOT restored yet. Earlier STATUS in same capture was 15 sec before the write, with `valid=14 bad=0 notices=12 UART_errors=0 I2C_errors=0`.
+- This verifies **configuration update**, not independently measured physical hold-time effectiveness, and no claim of exact five seconds measured with stopwatch.
+- **IMMEDIATE NEXT single user test:** with same program running, send `PLAN DELAY 15`, verify it says `CURRENT DELAY: 5 seconds` and `PROPOSED DELAY: 5 -> 15 seconds`, then `CONFIRM` within 60 sec, then `STATUS`; share output to verify 15sec restoration. If write/ACK/readback fails do not claim original restored; troubleshoot.
+- Original baseline: motion MID 1, presence MID 1, range min0/max1100cm, disappearance delay 15sec, resolution code0 80cm. Motion+presence and range cycle previously user-verified restored; latest delay presently at 5sec and restoration pending.
+- Keep all known-good sketches intact; no rewiring or power discussion. User prefers one atomic test each turn.
+
+---
+
 # 2026-11-10 — Delay control startup/manual STATUS USER-VERIFIED PASS; no write yet
 
 User provided live output from `diagnostics/arduino/slot18_c4002_delay_control/slot18_c4002_delay_control.ino`:
