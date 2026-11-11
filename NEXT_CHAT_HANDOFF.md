@@ -1,3 +1,21 @@
+# 2026-11-10 — SENSITIVITY CONTROLLER INTERACTIVE STATUS USER-VERIFIED PASS
+
+- Latest user-uploaded full Arduino Serial Monitor log: `Pasted text(20261111-024042).txt` (190 lines). The log includes old continuous and audit output for context; new content appended after sensitivity-control startup banner.
+- **Manual `STATUS` was successfully received and processed** after the startup instructions; new output at lines 184–189:
+```
+STATUS: current radar sensitivity groups:
+  Motion  = MID (group 1)
+  Presence= MID (group 1)
+  Link diagnostics: valid_frames=184 bad=0 notices=180 UART_errors=0 I2C_errors=0
+  Original hardware snapshot: MOTION MID, PRESENCE MID.
+  NO sensor settings changed by STATUS.
+```
+- Status **PASS**: PC UART input -> ESP32 command parser, live sensor READ replies, 180 live notification frames counted, zero I2C/UART/invalid frame errors. Confirmed both original groups still MID, no writes. Working source `diagnostics/arduino/slot18_c4002_sensitivity_control/slot18_c4002_sensitivity_control.ino` compiled/uploaded and now tested for startup + manual read-only command. **WRITE/CONFIRM and readback NOT TESTED YET**.
+- **Next controlled milestone:** one explicit `PLAN MOTION LOW` then inspect proposed MID -> LOW; type `CONFIRM` within 60s in same on-hardware session, which should write *motion only* and re-read, followed by `STATUS`. Record exact output, including any warning. For returning to original snapshot later, separate `PLAN MOTION MID` + `CONFIRM` and `STATUS` to verify. Presence must remain MID throughout. If control writes fail, stop and troubleshoot without repeated writes. The user likes one test at a time; do not silently change sensor settings or assume a plan alone changes anything.
+- No edits to user-verified continuous monitor or read-only audit. No need to revisit USB hardware port (CH343 UART USB-C verified).
+
+---
+
 # 2026-11-10 — Phase B sensitivity control boots, queries both groups: USER-VERIFIED READ-ONLY STARTUP PASS
 
 - User uploaded Serial Monitor paste `Pasted text(20261111-023743).txt`, 183 lines. First t=24..119s prior continuous program, then an ESP-ROM reboot and previous standalone settings-audit 6/6 PASS, then **a second reboot** followed by latest `SLOT-18 C4002 SENSITIVITY CONTROL — CONFIRM REQUIRED` candidate. Interpret only the lines after that second boot as the new control test, not the earlier session lines.
