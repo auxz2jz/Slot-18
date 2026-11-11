@@ -1,3 +1,11 @@
+# 2026-11-10 — Replacement C4002 bench: I2C ACK verified, external UART pending
+
+**New user-reported test:** After correcting Arduino flash settings to 16MB flash, 16MB (3MB APP / 9.9MB FATFS) partition scheme, and enabling PSRAM, the read-only `slot18_i2c_discovery` scanner now runs (previous 8MB boot-partition mismatch resolved in this upload). User reported 25 responding I2C addresses before powering the external CJMCU-752/C4002 setup, then 26 with the setup powered; scanner printed `ACK 0x4D (CJMCU-752 expected)` and `CJMCU-752 0x4D: PASS (I2C ACK only)`. **External CJMCU I2C address connection PASSED for this bench run.** Unexpectedly, `Touch 0x5D: NOT FOUND` was printed; the complete address list has not yet been provided, so do NOT infer touch failure or assume exactly which 25 were previously present. Note previous factory touch demo was user-verified before flashing serial diagnostics.
+
+**NOT yet established:** replacement C4002 UART communication or any verified radar reading. C4002's RUN/OUT LEDs are not proof of UART validity. Next atomic step per October 27 handoff: photograph/read physical CJMCU-752 oscillator/crystal marking (with power OFF) before choosing the correct UART baud divisor, or examine a complete single I2C scan if addressing issue needs immediate follow-up. Do not repeat two guessed clock settings. Preserve boot and I2C results in state.
+
+---
+
 # Slot-18 — 2026-11-10 user serial log: ESP32 boot loop, I2C test BLOCKED
 
 - User uploaded Arduino Serial Monitor capture (20,783 lines), not committed because bulk noisy logs stay attached to chat.
