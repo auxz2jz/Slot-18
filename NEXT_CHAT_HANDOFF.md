@@ -1,3 +1,12 @@
+# 2026-11-10 — C4002 board mounting/orientation and test geometry clarification
+
+- User says the SEN0691 C4002 was apparently facing **out a doorway**; the user was about 20ft away in a different room, toward the **right** side of the sensor, separated by a wall, not directly along the sensor boresight. User uncertain about exact radar orientation: they say the printed label was facing forward/up and the 5 pins were at the bottom. **No physical photograph/level measurement from this specific mounting yet.**
+- DFRobot official SEN0691 wiki lists 120° x 120° nominal coverage and front-face gold antenna patches visible next to DFRobot label. The PCB should be **vertical with the broad printed/antenna face toward the doorway** for side-mounted horizontal sensing; the label-up/pins-bottom orientation is reasonable **only if PCB plane is vertical**. If board lies flat face-up, its boresight is mainly upward, not outward. Source: https://wiki.dfrobot.com/sen0691/ (manufacturer). Estimated 20ft (~6m) offset to side of boresight may be outside nominal main lobe if angular deviation >~60°; the precise physical angle unknown. This is NOT evidence of through-wall detection or person identification.
+- C4002 reported presence at ranges often ~1.5-3m, different from user's estimated 6m distance, reinforcing unidentified foreground reflection/background-target possibility. Don't infer false positives or through-wall performance until controlled empty-field tests.
+- User requested defer power supply conversation; continue sensor orientation / detection reliability or display when asked.
+
+---
+
 # 2026-11-10 — Critical new context for 17m C4002 presence report
 
 - User clarified that for much of the prior extended 17min continuous run, **they were ~20 feet away washing dishes in a different room** from the stationary C4002. Therefore repeated `PRESENCE` during that window **MUST NOT be described as successful stationary detection of the user** or as verified true-positive occupancy. The radar may have sensed some other movement/presence, an environmental source, reflections, or possibly detected through a barrier; all remain **unproven**. The sensor logs often reported presence distances nearer ~1.5–3m and motion distance values remained stale when motion energy=0; these measurements are NOT reliable identity/location evidence.
