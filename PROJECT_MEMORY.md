@@ -1,3 +1,15 @@
+# Slot-18 — 2026-11-10 user serial log: ESP32 boot loop, I2C test BLOCKED
+
+- User uploaded Arduino Serial Monitor capture (20,783 lines), not committed because bulk noisy logs stay attached to chat.
+- Boot continuously reports: `partition 4 invalid - offset 0x610000 size 0x9e0000 exceeds flash chip size 0x800000`, then `Failed to verify partition table` and `load partition table error!`. Approx. 1,598 repeats of the reset banner and 1,597–1,598 repeats of each error. **No `Slot-18 I2C Bridge Discovery` output; diagnostic NEVER REACHED setup.**
+- Prior direct esptool interrogation reported physical flash 16MB, N16R8; current bootloader is enforcing 8MB (`0x800000`) while partition table spans nearly 16MB. Suspect incorrect Arduino Flash Size setting or bootloader image configuration (8MB vs actual 16MB), NOT proven component failure.
+- **Next atomic action:** In Arduino IDE Tools, confirm board profile, `Flash Size = 16MB (128Mb)` and a matching 16MB partition scheme, plus OPI PSRAM as previously verified. Re-upload existing read-only I2C scanner (do NOT rewrite code, do NOT erase all flash); capture fresh serial output. If menu does not expose these values, inspect selected board profile rather than guessing. Do not cycle same failed build.
+- Screen blank is expected for scanner, but serial should show its own banner when boot works. Do not test C4002 until scanner boots, then verify `0x4D` bridge and `0x5D` touch.
+- Previously saved original full 16MB factory image remains private on Windows and restore untested. Preserve it.
+- No replacement-radar results established by this failed boot.
+
+---
+
 # 2026-11-10 replacement C4002 and read-only I2C diagnostic (CURRENT)
 
 - User replaced the previously unresponsive DFRobot C4002 SEN0691 with the same model. Reports RUN and OUT indicator activity only. Replacement's UART, presence and range not tested; power rail voltage on replacement not yet remeasured.
